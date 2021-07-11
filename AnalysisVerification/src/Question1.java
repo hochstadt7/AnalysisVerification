@@ -49,6 +49,7 @@ public class Question1 extends Question {
 	}
 
 	@Override
+	
 	boolean assertion(String assertCommand,Map<String,Integer> variables,Vertex last) { // pass this function to be implemented at question.java?
 		List<String> matchList = new ArrayList<String>();
 		Pattern regex = Pattern.compile("\\((.*?)\\)");
@@ -67,8 +68,8 @@ public class Question1 extends Question {
 	
 	//controlGraph.vertices[n-1].state as input?
 	public boolean validate(String andCondition, Map<String,Integer> variables, Vertex last) {
-		Pattern regex = Pattern.compile("\\((.*?)\\)");
-		Matcher regexMatcher = regex.matcher("EVEN");
+		Pattern regex = Pattern.compile("EVEN");
+		Matcher regexMatcher = regex.matcher(andCondition);
 
 		while (regexMatcher.find()) {//Finds Matching Pattern in String
 		   String var=andCondition.substring(regexMatcher.start(),regexMatcher.end());
@@ -76,8 +77,8 @@ public class Question1 extends Question {
 			   return false;
 		}
 		
-		regex = Pattern.compile("\\((.*?)\\)");
-		regexMatcher = regex.matcher("ODD");
+		regex = Pattern.compile("ODD");
+		regexMatcher = regex.matcher(andCondition);
 
 		while (regexMatcher.find()) {//Finds Matching Pattern in String
 		   String var=andCondition.substring(regexMatcher.start(),regexMatcher.end());
