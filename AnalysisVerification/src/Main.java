@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -11,48 +12,55 @@ public class Main {
 
 	public static void main(String[] args) {
 		question1=new Question1();
-
+		String input=args[0];
+		
+		Scanner in=new Scanner(input);
+		String []varList=in.nextLine().split(" "); // first line is the variables
+		ControlGraph controlGraph=Manager.buildGraph(in,varList.length,varList);
 	}
 	
-	public boolean chaoticIteration(int numOfVars) {
+	// based on the algorithm in lecture 7, page 108
+	public boolean chaoticIteration(int numOfVars, ControlGraph controlGraph, String []varList) {
 		
-		Map<String,Integer> variables=null; // need to set it according to the input
-		Set<Integer> workList=new HashSet<Integer>();
-		ControlGraph controlGraph=Manager.buildGraph();
-		int popIndex;
+		Set<String> workList=new HashSet<String>();
+		String popName=""; // the label of the vertex we pop at the chaotic iteration
 		
-		for(int i=0; i<numOfVars; i++) {
+		/*for(int i=0; i<numOfVars; i++) { already happens in the vertex constructor
 			controlGraph.vertices[i].state=Manager.initializeToBottom(numOfVars);
+		}*/
+		
+		for(String name:controlGraph.names.keySet()) {
+			workList.add(name);
 		}
 		
-		for(int i=0; i<numOfVars; i++) {
-			workList.add(i);
-		}
-		
-		while(!workList.isEmpty()) {
+		while(!workList.isEmpty()) { // need to check edge case where there is no variable at the beginning?
 			
-			for(popIndex=0; popIndex<numOfVars; popIndex++) { // is there better way to remove item from a setand get his value?
-				if(workList.contains(popIndex)) {
-					workList.remove(popIndex);
+			for(String name:controlGraph.names.keySet()) { // is there better way to remove item from a set, and get his value? I hate Sets in Java
+				if(workList.contains(name)) { // supposed to happen at some iteration
+					workList.remove(name);
+					popName=name;
 					break;
 				}
 			}
+			int index=controlGraph.vertices.indexOf(controlGraph.names.get(popName)); // those two lines can be simplified, but basically we retrieve the state of the vertex with popLabel
+			Map<String, AbstractValue> newState=controlGraph.vertices.get(index).state;
 			
-			Map<Integer, AbstractValue> newState=controlGraph.vertices[popIndex].state;
-			for (Entry<Vertex, Edge> entry : controlGraph.vertices[popIndex].pointedBy.entrySet()) {
-				newState=question1.union(newState, question1.activateAbstractFunction(entry.getKey().state, entry.getValue().command));
+			// the new state of our current vertex is the union of all vertices point to the vertex, after activation of the corresponding abstract function
+			for (Entry<Vertex, Edge> entry : controlGraph.vertices.get(index).pointedBy.entrySet()) {
+				newState=question1.union(newState, question1.activateAbstractFunction(entry.getKey().state, entry.getValue().command),varList);
 			}
-			if(newState!=controlGraph.vertices[popIndex].state) {
-				controlGraph.vertices[popIndex].state=newState;
-				for (Vertex v : controlGraph.vertices[popIndex].pointTo) {
-					workList.add(v.numberOfVertex);
+			
+			if(newState!=controlGraph.vertices.get(index).state) {
+				controlGraph.vertices.get(index).state=newState;
+				for (Vertex v : controlGraph.vertices.get(index).pointTo) { // append all vertices pointed by our current vertex
+					workList.add(v.label);
 				}
 			}
 			
 		}
 		
-		return question1.assertion("insert assertion command",variables,controlGraph.vertices[numOfVars-1]);
-		
+		//return question1.assertion("insert assertion command",variables,controlGraph.vertices[numOfVars-1]); // need to change it since assert can be also in the middle of the program
+		return false;
 	}
 
 }

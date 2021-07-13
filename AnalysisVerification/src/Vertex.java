@@ -6,14 +6,17 @@ import java.util.Map;
 
 public class Vertex {
 
+	String label;
 	Map<Vertex,Edge> pointedBy;
 	List<Vertex> pointTo;
-	Map<Integer, AbstractValue> state;
-	int numberOfVertex;
+	Map<String, AbstractValue> state; //every vertex has a state
 	
-	public Vertex(int n) {
+	
+	public Vertex(int n,  String label, String []varList) {
 		pointedBy=new HashMap<Vertex,Edge>();
 		pointTo=new ArrayList<Vertex>();
-		state=Manager.initializeToBottom(n); // need to initialize to bottom value for each integer
+		
+		this.label=label;
+		this.state=Manager.initializeToBottom(n,varList);
 	}
 }

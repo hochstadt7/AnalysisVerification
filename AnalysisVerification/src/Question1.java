@@ -7,21 +7,52 @@ import java.util.regex.Pattern;
 
 public class Question1 extends Question {
 	
+	
+	
 	@Override
-	Map<Integer, AbstractValue> activateAbstractFunction(Map<Integer, AbstractValue> variables, String command) {
+	Map<String, AbstractValue> activateAbstractFunction(Map<String, AbstractValue> variables, String command) {
 		
-		HashMap<Integer, AbstractValue> output=new HashMap<Integer,AbstractValue> (variables); // make a copy
+		HashMap<String, AbstractValue> output=new HashMap<String,AbstractValue> (variables); // make a copy
 		
-		switch (command) {
-		case "Skip":
-			return output;
 		
-		case "i=j": // need to parse the command in order to extract i and j
-			output.put(0,variables.get(1));
+		if(command.equals("skip"))
+			return output; // state hasn't changed
+		
+		else if(command.contains("assume")) {
+			
 		}
+			
+		else if (command.contains("assert")) {
+			
+		}
+		
+		else {
+			int equal=command.indexOf("=");
+			String afterEqual=command.substring(equal+1);
+			String beforeEqual=command.substring(0,equal);
+			if(afterEqual.contains("+")|| afterEqual.contains("-")) { // operator assignment
+				AbstractValue tmp= (variables.get(afterEqual).val=="ODD"? new AbstractValue("EVEN"): new AbstractValue("ODD"));
+				output.put(beforeEqual, tmp);
+			}
+			else if(afterEqual.contains("?")) {
+				output.put(beforeEqual, variables.get(afterEqual));
+			}
+			
+			else if(Character.isDigit(afterEqual.charAt(0))) { //variable assignment
+				
+			}
+			
+			else { // constant assignment
+				AbstractValue tmp=(Integer.parseInt(String.valueOf(afterEqual.charAt(0)))%2==0? new AbstractValue("EVEN"): new AbstractValue("ODD"));
+				output.put("beforeEqual", tmp);
+			}
+		}
+		
+		
 		return output;
 		
 	}
+	
 	
 	private AbstractValue unionPointWise(AbstractValue value1, AbstractValue value2) {
 
@@ -38,21 +69,21 @@ public class Question1 extends Question {
 	}
 	
 	@Override
-	public Map<Integer, AbstractValue> union(Map<Integer, AbstractValue> value1, Map<Integer, AbstractValue> value2){
+	public Map<String, AbstractValue> union(Map<String, AbstractValue> value1, Map<String, AbstractValue> value2,String []varList){
 		
-		Map<Integer, AbstractValue> output=new HashMap<Integer, AbstractValue>();
+		Map<String, AbstractValue> output=new HashMap<String, AbstractValue>();
 		//union pointwise
-		for(int i=0; i<value1.size(); i++) {
-			output.put(i, unionPointWise(value1.get(i),value2.get(i)));
+		for(String str:varList) {
+			output.put(str, unionPointWise(value1.get(str),value2.get(str)));
 		}
 		return output;
 	}
 
 	@Override
 	
-	boolean assertion(String assertCommand,Map<String,Integer> variables,Vertex last) { // pass this function to be implemented at question.java?
+	boolean assertion(String assertCommand,Map<String,Integer> variables,Vertex last) { //move this function to be implemented at question.java?
 		List<String> matchList = new ArrayList<String>();
-		Pattern regex = Pattern.compile("\\((.*?)\\)");
+		Pattern regex = Pattern.compile("\\((.*?)\\)"); //find all the parenthesis
 		Matcher regexMatcher = regex.matcher(assertCommand);
 
 		while (regexMatcher.find()) {//Finds Matching Pattern in String
@@ -60,7 +91,7 @@ public class Question1 extends Question {
 		}
 		for(String str:matchList) {
 			   if(validate(str,variables,last))
-				   return true;
+				   return true; // it is enough that one conjunction will be true
 			}
 		return false;
 	}
@@ -74,7 +105,7 @@ public class Question1 extends Question {
 		while (regexMatcher.find()) {//Finds Matching Pattern in String
 		   String var=andCondition.substring(regexMatcher.start(),regexMatcher.end());
 		   if(!( last.state.get(variables.get(var.charAt(5))).equals("EVEN")))
-			   return false;
+			   return false; // all the disjunctions have to be true
 		}
 		
 		regex = Pattern.compile("ODD");
@@ -82,7 +113,7 @@ public class Question1 extends Question {
 
 		while (regexMatcher.find()) {//Finds Matching Pattern in String
 		   String var=andCondition.substring(regexMatcher.start(),regexMatcher.end());
-		   if(!(last.state.get(variables.get(var.charAt(4))).equals("ODD")))
+		   if(!(last.state.get(variables.get(var.charAt(4))).equals("ODD"))) //why charAt(4)? because the format of the input, just look at the examples
 			   return false;
 		}
 		return true;
