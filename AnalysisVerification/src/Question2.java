@@ -5,7 +5,7 @@ public class Question2 extends Question {
 
 
 	@Override
-	boolean assertion(String assertCommand, Map<String, Integer> variables, Vertex last) {
+	boolean assertion(String assertCommand, Vertex last) {
 		// TODO Auto-generated method stub
 		return false;
 	}

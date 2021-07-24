@@ -18,12 +18,40 @@ public class Question1 extends Question {
 		if(command.equals("skip"))
 			return output; // state hasn't changed
 		
+		/* we need to discuss about assume*/
 		else if(command.contains("assume")) {
+			String afterAssume=command.substring(7);
+			String[] split=afterAssume.split(" ");
+			if(split[1].contains("!")) {
+				if((variables.get(split[0]).val.equals("EVEN")&&Integer.parseInt(split[2])%2==0)
+						||(variables.get(split[0]).val.equals("EVEN")&&Integer.parseInt(split[2])%2==1)) {
+					return output;
+				}
+				else {
+					for(String a: output.keySet()) {
+						output.put(a, new AbstractValue("BOTTOM"));
+					}
+					return output;
+				}
+			}
+			else {
+				if((variables.get(split[0]).val.equals("EVEN")&&Integer.parseInt(split[2])%2==1)
+						||(variables.get(split[0]).val.equals("EVEN")&&Integer.parseInt(split[2])%2==0)) {
+					return output;
+				}
+				else {
+					for(String a: output.keySet()) {
+						output.put(a, new AbstractValue("BOTTOM"));
+					}
+					return output;
+				}
+				
+			}
 			
 		}
 			
 		else if (command.contains("assert")) {
-			
+			return output;
 		}
 		
 		else {
@@ -81,7 +109,7 @@ public class Question1 extends Question {
 
 	@Override
 	
-	boolean assertion(String assertCommand,Map<String,Integer> variables,Vertex last) { //move this function to be implemented at question.java?
+	boolean assertion(String assertCommand,Vertex last) { //move this function to be implemented at question.java?
 		List<String> matchList = new ArrayList<String>();
 		Pattern regex = Pattern.compile("\\((.*?)\\)"); //find all the parenthesis
 		Matcher regexMatcher = regex.matcher(assertCommand);
@@ -90,33 +118,22 @@ public class Question1 extends Question {
 		   matchList.add(regexMatcher.group(1));//Fetching Group from String
 		}
 		for(String str:matchList) {
-			   if(validate(str,variables,last))
+			   if(validate(str.substring(1,str.length()-1),last))
 				   return true; // it is enough that one conjunction will be true
-			}
+		}
 		return false;
 	}
 	
 	
-	//controlGraph.vertices[n-1].state as input?
-	public boolean validate(String andCondition, Map<String,Integer> variables, Vertex last) {
-		Pattern regex = Pattern.compile("EVEN");
-		Matcher regexMatcher = regex.matcher(andCondition);
-
-		while (regexMatcher.find()) {//Finds Matching Pattern in String
-		   String var=andCondition.substring(regexMatcher.start(),regexMatcher.end());
-		   if(!( last.state.get(variables.get(var.charAt(5))).equals("EVEN")))
-			   return false; // all the disjunctions have to be true
-		}
+	public boolean validate(String andCondition, Vertex last) {
 		
-		regex = Pattern.compile("ODD");
-		regexMatcher = regex.matcher(andCondition);
-
-		while (regexMatcher.find()) {//Finds Matching Pattern in String
-		   String var=andCondition.substring(regexMatcher.start(),regexMatcher.end());
-		   if(!(last.state.get(variables.get(var.charAt(4))).equals("ODD"))) //why charAt(4)? because the format of the input, just look at the examples
-			   return false;
+		String[] arr=andCondition.split(" ");
+		for(int i=0; i<arr.length/2; i++) {
+			if(!(arr[i].equals(last.state.get(arr[i+1]))))
+				return false;
 		}
 		return true;
+		
 	}
 	
 	
