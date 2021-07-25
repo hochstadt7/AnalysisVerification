@@ -16,11 +16,14 @@ public class Main {
 		
 		Scanner in=new Scanner(input);
 		String []varList=in.nextLine().split(" "); // first line is the variables
-		ControlGraph controlGraph=Manager.buildGraph(in,varList.length,varList);
+		int numOfVar=varList.length;
+		ControlGraph controlGraph=Manager.buildGraph(in,numOfVar,varList);
+		System.out.println(chaoticIteration(numOfVar,controlGraph,varList));
+		
 	}
 	
 	// based on the algorithm in lecture 7, page 108
-	public boolean chaoticIteration(int numOfVars, ControlGraph controlGraph, String []varList) {
+	public static boolean chaoticIteration(int numOfVars, ControlGraph controlGraph, String []varList) {
 		
 		Set<String> workList=new HashSet<String>();
 		String popName=""; // the label of the vertex we pop at the chaotic iteration
@@ -43,11 +46,11 @@ public class Main {
 				}
 			}
 			int index=controlGraph.vertices.indexOf(controlGraph.names.get(popName)); // those two lines can be simplified, but basically we retrieve the state of the vertex with popLabel
-			Map<String, AbstractValue> newState=controlGraph.vertices.get(index).state;
+			Map<String, String> newState=controlGraph.vertices.get(index).state;
 			
 			// the new state of our current vertex is the union of all vertices point to the vertex, after activation of the corresponding abstract function
-			for (Entry<Vertex, Edge> entry : controlGraph.vertices.get(index).pointedBy.entrySet()) {
-				newState=question1.union(newState, question1.activateAbstractFunction(entry.getKey().state, entry.getValue().command),varList);
+			for (Entry<Vertex, String> entry : controlGraph.vertices.get(index).pointedBy.entrySet()) {
+				newState=question1.union(newState, question1.activateAbstractFunction(entry.getKey().state, entry.getValue()),varList);
 			}
 			
 			if(newState!=controlGraph.vertices.get(index).state) {
@@ -58,9 +61,16 @@ public class Main {
 			}
 			
 		}
-		
-		//return question1.assertion("insert assertion command",variables,controlGraph.vertices[numOfVars-1]); // need to change it since assert can be also in the middle of the program
-		return false;
+		for(Vertex v:controlGraph.vertices) {
+			for(Entry<Vertex, String> entry : v.pointedBy.entrySet()) {
+				if(entry.getValue().contains("assert")) {
+					if(!question1.assertion(entry.getValue(),entry.getKey()))
+						return false;
+				}
+			}
+		}
+	
+		return true;
 	}
 
 }

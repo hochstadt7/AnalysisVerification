@@ -10,9 +10,9 @@ public class Question1 extends Question {
 	
 	
 	@Override
-	Map<String, AbstractValue> activateAbstractFunction(Map<String, AbstractValue> variables, String command) {
+	Map<String, String> activateAbstractFunction(Map<String, String> variables, String command) {
 		
-		HashMap<String, AbstractValue> output=new HashMap<String,AbstractValue> (variables); // make a copy
+		Map<String, String> output=new HashMap<String,String> (variables); // make a copy
 		
 		
 		if(command.equals("skip"))
@@ -23,25 +23,25 @@ public class Question1 extends Question {
 			String afterAssume=command.substring(7);
 			String[] split=afterAssume.split(" ");
 			if(split[1].contains("!")) {
-				if((variables.get(split[0]).val.equals("EVEN")&&Integer.parseInt(split[2])%2==0)
-						||(variables.get(split[0]).val.equals("EVEN")&&Integer.parseInt(split[2])%2==1)) {
+				if((variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==0)
+						||(variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==1)) {
 					return output;
 				}
 				else {
 					for(String a: output.keySet()) {
-						output.put(a, new AbstractValue("BOTTOM"));
+						output.put(a, "BOTTOM");
 					}
 					return output;
 				}
 			}
 			else {
-				if((variables.get(split[0]).val.equals("EVEN")&&Integer.parseInt(split[2])%2==1)
-						||(variables.get(split[0]).val.equals("EVEN")&&Integer.parseInt(split[2])%2==0)) {
+				if((variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==1)
+						||(variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==0)) {
 					return output;
 				}
 				else {
 					for(String a: output.keySet()) {
-						output.put(a, new AbstractValue("BOTTOM"));
+						output.put(a, "BOTTOM");
 					}
 					return output;
 				}
@@ -59,7 +59,7 @@ public class Question1 extends Question {
 			String afterEqual=command.substring(equal+1);
 			String beforeEqual=command.substring(0,equal);
 			if(afterEqual.contains("+")|| afterEqual.contains("-")) { // operator assignment
-				AbstractValue tmp= (variables.get(afterEqual).val=="ODD"? new AbstractValue("EVEN"): new AbstractValue("ODD"));
+				String tmp= (variables.get(afterEqual).equals("ODD")? "EVEN": "ODD");
 				output.put(beforeEqual, tmp);
 			}
 			else if(afterEqual.contains("?")) {
@@ -71,7 +71,7 @@ public class Question1 extends Question {
 			}
 			
 			else { // constant assignment
-				AbstractValue tmp=(Integer.parseInt(String.valueOf(afterEqual.charAt(0)))%2==0? new AbstractValue("EVEN"): new AbstractValue("ODD"));
+				String tmp=(Integer.parseInt(String.valueOf(afterEqual.charAt(0)))%2==0? "EVEN": "ODD");
 				output.put("beforeEqual", tmp);
 			}
 		}
@@ -82,24 +82,24 @@ public class Question1 extends Question {
 	}
 	
 	
-	private AbstractValue unionPointWise(AbstractValue value1, AbstractValue value2) {
+	private String unionPointWise(String value1, String value2) {
 
-		if((value1.val.equals("TOP")||value2.val.equals("TOP"))||(value1.val.equals("EVEN")&&value2.val.equals("ODD"))||(value1.val.equals("ODD")&&value2.val.equals("EVEN")))
-			return new AbstractValue("TOP");
+		if((value1.equals("TOP")||value2.equals("TOP"))||(value1.equals("EVEN")&&value2.equals("ODD"))||(value1.equals("ODD")&&value2.equals("EVEN")))
+			return "TOP";
 		
-		else if(value1.val.equals("BOTTOM")&&value2.val.equals("BOTTOM"))
-			return new AbstractValue("BOTTOM");
-		else if(value1.val.equals("ODD"))
-			return new AbstractValue("ODD");
+		else if(value1.equals("BOTTOM")&&value2.equals("BOTTOM"))
+			return "BOTTOM";
+		else if(value1.equals("ODD"))
+			return "ODD";
 		else
-			return new AbstractValue("EVEN");
+			return "EVEN";
 		
 	}
 	
 	@Override
-	public Map<String, AbstractValue> union(Map<String, AbstractValue> value1, Map<String, AbstractValue> value2,String []varList){
+	public Map<String, String> union(Map<String, String> value1, Map<String, String> value2,String []varList){
 		
-		Map<String, AbstractValue> output=new HashMap<String, AbstractValue>();
+		Map<String, String> output=new HashMap<String, String>();
 		//union pointwise
 		for(String str:varList) {
 			output.put(str, unionPointWise(value1.get(str),value2.get(str)));
@@ -109,7 +109,7 @@ public class Question1 extends Question {
 
 	@Override
 	
-	boolean assertion(String assertCommand,Vertex last) { //move this function to be implemented at question.java?
+	boolean assertion(String assertCommand,Vertex last) {
 		List<String> matchList = new ArrayList<String>();
 		Pattern regex = Pattern.compile("\\((.*?)\\)"); //find all the parenthesis
 		Matcher regexMatcher = regex.matcher(assertCommand);

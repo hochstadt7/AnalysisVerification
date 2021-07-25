@@ -7,10 +7,10 @@ import java.util.Set;
 public class Manager {
 
 	// states are initialized to hold BOTTOMS as abstract value
-	public static Map<String, AbstractValue> initializeToBottom(int n,String []varList){
-		Map<String,AbstractValue> init=new HashMap<String,AbstractValue>();
+	public static Map<String, String> initializeToBottom(int n,String []varList){
+		Map<String,String> init=new HashMap<String,String>();
 		for(String str:varList) {
-			init.put(str, new AbstractValue("BOTTOM"));
+			init.put(str, "BOTTOM");
 		}
 		return init;
 	}
@@ -40,7 +40,7 @@ public class Manager {
 				controlGraph.vertices.add(dest);
 				names.put(target, dest);
 			}
-			names.get(target).pointedBy.put(names.get(source), new Edge(command)); // target pointed by source
+			names.get(target).pointedBy.put(names.get(source), command); // target pointed by source
 			names.get(source).pointTo.add(names.get(target)); //source points to target
 			
 		}

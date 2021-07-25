@@ -7,13 +7,13 @@ import java.util.Map;
 public class Vertex {
 
 	String label;
-	Map<Vertex,Edge> pointedBy;
+	Map<Vertex,String> pointedBy;
 	List<Vertex> pointTo;
-	Map<String, AbstractValue> state; //every vertex has a state
+	Map<String, String> state; //every vertex has a state
 	
 	
 	public Vertex(int n,  String label, String []varList) {
-		pointedBy=new HashMap<Vertex,Edge>();
+		pointedBy=new HashMap<Vertex,String>();
 		pointTo=new ArrayList<Vertex>();
 		
 		this.label=label;

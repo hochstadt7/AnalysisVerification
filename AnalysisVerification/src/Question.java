@@ -1,12 +1,11 @@
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Question {
 
 	
 	
-	abstract Map<String, AbstractValue> activateAbstractFunction(Map<String, AbstractValue> variables, String command);
-	abstract Map<String, AbstractValue> union(Map<String, AbstractValue> value1, Map<String, AbstractValue> value2,String []varList);
+	abstract Map<String, String> activateAbstractFunction(Map<String, String> variables, String command);
+	abstract Map<String, String> union(Map<String, String> value1, Map<String, String> value2,String []varList);
 	abstract boolean assertion(String assertCommand,Vertex last);
 	
 }
