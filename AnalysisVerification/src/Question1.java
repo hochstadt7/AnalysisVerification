@@ -22,7 +22,7 @@ public class Question1 extends Question {
 		else if(command.contains("assume")) {
 			String afterAssume=command.substring(7);
 			String[] split=afterAssume.split(" ");
-			if(split[1].contains("!")) {
+			if(split[0].contains("!")) {
 				if((variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==0)
 						||(variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==1)) {
 					return output;
@@ -54,26 +54,42 @@ public class Question1 extends Question {
 			return output;
 		}
 		
-		else {
+		else { // assignment
 			int equal=command.indexOf("=");
-			String afterEqual=command.substring(equal+1);
-			String beforeEqual=command.substring(0,equal);
+			String afterEqual=command.substring(equal+2);
+			String beforeEqual=command.substring(0,equal-1);
+			String[] splitAfter=afterEqual.split(" ");
 			if(afterEqual.contains("+")|| afterEqual.contains("-")) { // operator assignment
-				String tmp= (variables.get(afterEqual).equals("ODD")? "EVEN": "ODD");
-				output.put(beforeEqual, tmp);
-			}
-			else if(afterEqual.contains("?")) {
-				output.put(beforeEqual, variables.get(afterEqual));
-			}
-			
-			else if(Character.isDigit(afterEqual.charAt(0))) { //variable assignment
+				String tmp=variables.get(splitAfter[0]);
+				if(tmp.equals("TOP")||tmp.equals("BOTTOM")) {
+					
+				}
+				else {
+					tmp= (variables.get(splitAfter[0]).equals("ODD")? "EVEN": "ODD");
+					output.put(beforeEqual, tmp);
+				}
 				
 			}
 			
-			else { // constant assignment
-				String tmp=(Integer.parseInt(String.valueOf(afterEqual.charAt(0)))%2==0? "EVEN": "ODD");
-				output.put("beforeEqual", tmp);
+			else if(afterEqual.contains("?")) {
+				output.put(beforeEqual, "TOP");
 			}
+			
+			else {
+				String tmp="";
+				try { // variable assignment
+					int isNum=Integer.parseInt(splitAfter[0]);
+					tmp=(isNum%2==0?"EVEN":"ODD");
+				}
+				
+				catch(NumberFormatException e){ // constant assignment
+					tmp=variables.get(splitAfter[0]);
+				}
+				finally {
+					output.put(beforeEqual, tmp);
+				}   
+			}
+			
 		}
 		
 		
@@ -100,7 +116,7 @@ public class Question1 extends Question {
 	public Map<String, String> union(Map<String, String> value1, Map<String, String> value2,String []varList){
 		
 		Map<String, String> output=new HashMap<String, String>();
-		//union pointwise
+		// union pointwise
 		for(String str:varList) {
 			output.put(str, unionPointWise(value1.get(str),value2.get(str)));
 		}

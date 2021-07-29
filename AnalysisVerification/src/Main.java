@@ -10,11 +10,12 @@ public class Main {
 	static Question1 question1;
 	
 
+	//expected input format: list of vars with one space separator, than each line has vertex- 2 spaces- command- 2 spaces- vertex
 	public static void main(String[] args) {
 		question1=new Question1();
 		String input=args[0];
 		
-		Scanner in=new Scanner(input);
+		Scanner in=new Scanner(input).useDelimiter("  |\\n");
 		String []varList=in.nextLine().split(" "); // first line is the variables
 		int numOfVar=varList.length;
 		ControlGraph controlGraph=Manager.buildGraph(in,numOfVar,varList);

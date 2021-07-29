@@ -25,7 +25,7 @@ public class Manager {
 		while(in.hasNextLine()) {
 			String source=in.next();
 			String command=in.next();
-			String target=in.next(); // now it passed a line??
+			String target=in.next(); // now it passed a line as needed?
 			Vertex src;
 			Vertex dest;
 			if (!(labels.contains(source))) {
