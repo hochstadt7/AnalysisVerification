@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,9 +24,12 @@ public class Manager {
 		Set<String> labels=new HashSet<String>(); // to remember for which variables we have already created a vertex
 		Map<String,Vertex> names=new HashMap<String,Vertex>(); //map between variables names, and vertices with those names as labels
 		while(in.hasNextLine()) {
-			String source=in.next();
-			String command=in.next();
-			String target=in.next(); // now it passed a line as needed?
+			String []row=in.nextLine().split(" ");
+			String source=row[0];
+			String[] subarray = Arrays.copyOfRange(row, 1, row.length-2);
+			String command=String.join(" ", subarray).trim();
+			String target=row[row.length-1];
+			
 			Vertex src;
 			Vertex dest;
 			if (!(labels.contains(source))) {

@@ -15,7 +15,7 @@ public class Main {
 		question1=new Question1();
 		String input=args[0];
 		
-		Scanner in=new Scanner(input).useDelimiter("  |\\n");
+		Scanner in=new Scanner(input).useDelimiter(" ");
 		String []varList=in.nextLine().split(" "); // first line is the variables
 		int numOfVar=varList.length;
 		ControlGraph controlGraph=Manager.buildGraph(in,numOfVar,varList);
