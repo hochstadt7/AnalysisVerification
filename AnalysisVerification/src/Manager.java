@@ -10,8 +10,9 @@ public class Manager {
 	// states are initialized to hold BOTTOMS as abstract value
 	public static Map<String, String> initializeToBottom(int n,String []varList){
 		Map<String,String> init=new HashMap<String,String>();
-		for(String str:varList) {
-			init.put(str, "BOTTOM");
+		init.put(varList[0], "TOP"); // only the first vertex is initialized to TOP
+		for(int i=1; i<varList.length; i++) {
+			init.put(varList[i], "BOTTOM");
 		}
 		return init;
 	}
