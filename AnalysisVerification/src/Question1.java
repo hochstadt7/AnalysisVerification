@@ -12,7 +12,7 @@ public class Question1 extends Question {
 	@Override
 	Map<String, String> activateAbstractFunction(Map<String, String> variables, String command) {
 		
-		Map<String, String> output=new HashMap<String,String> (variables); // make a copy
+		Map<String, String> output=new HashMap<> (variables); // make a copy
 		
 		
 		if(command.equals("skip"))
