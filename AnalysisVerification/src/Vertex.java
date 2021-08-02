@@ -12,11 +12,11 @@ public class Vertex {
 	Map<String, String> state; //every vertex has a state
 	
 	
-	public Vertex(int n,  String label, String []varList) {
-		pointedBy=new HashMap<Vertex,String>();
-		pointTo=new ArrayList<Vertex>();
+	public Vertex(String label, String[] varList) {
+		pointedBy = new HashMap<Vertex, String>();
+		pointTo = new ArrayList<Vertex>();
 		
-		this.label=label;
-		this.state=Manager.initializeToBottom(n,varList);
+		this.label = label;
+		this.state = Manager.initializeToBottom(varList);
 	}
 }

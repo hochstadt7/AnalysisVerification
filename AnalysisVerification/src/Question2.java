@@ -12,19 +12,18 @@ public class Question2 extends Question {
 	@Override
 	Map<String, String> activateAbstractFunction(Map<String, String> variables, String command) {
 		
-		Map<String, String> output=new HashMap<String,String> (variables); // make a copy
+		Map<String, String> output=new HashMap<> (variables); // make a copy
 		
-		
-		if(command.equals("skip"))
+		 if (command.equals("skip"))
 			return output; // state hasn't changed
 		
 		/* we need to discuss about assume*/
-		else if(command.contains("assume")) {
+		else  if (command.contains("assume")) {
 			String afterAssume=command.substring(7);
 			String[] split=afterAssume.split(" ");
-			if(split[1].contains("!")) {
-				if((variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==0)
-						||(variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==1)) {
+			 if (split[1].contains("!")) {
+				 if ((variables.get(split[0]).equals("EVEN") && Integer.parseInt(split[2]) % 2 == 0)
+						|| (variables.get(split[0]).equals("EVEN") && Integer.parseInt(split[2]) % 2 == 1)) {
 					return output;
 				}
 				else {
@@ -35,7 +34,7 @@ public class Question2 extends Question {
 				}
 			}
 			else {
-				if((variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==1)
+				 if ((variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==1)
 						||(variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==0)) {
 					return output;
 				}
@@ -58,15 +57,15 @@ public class Question2 extends Question {
 			int equal=command.indexOf("=");
 			String afterEqual=command.substring(equal+1);
 			String beforeEqual=command.substring(0,equal);
-			if(afterEqual.contains("+")|| afterEqual.contains("-")) { // operator assignment
+			 if (afterEqual.contains("+")|| afterEqual.contains("-")) { // operator assignment
 				String tmp= (variables.get(afterEqual).equals("ODD")? "EVEN": "ODD");
 				output.put(beforeEqual, tmp);
 			}
-			else if(afterEqual.contains("?")) {
+			else  if (afterEqual.contains("?")) {
 				output.put(beforeEqual, variables.get(afterEqual));
 			}
 			
-			else if(Character.isDigit(afterEqual.charAt(0))) { //variable assignment
+			else  if (Character.isDigit(afterEqual.charAt(0))) { //variable assignment
 				
 			}
 			
@@ -84,12 +83,12 @@ public class Question2 extends Question {
 	
 	private String unionPointWise(String value1, String value2) {
 
-		if((value1.equals("TOP")||value2.equals("TOP"))||(value1.equals("EVEN")&&value2.equals("ODD"))||(value1.equals("ODD")&&value2.equals("EVEN")))
+		 if ((value1.equals("TOP")||value2.equals("TOP"))||(value1.equals("EVEN")&&value2.equals("ODD"))||(value1.equals("ODD")&&value2.equals("EVEN")))
 			return "TOP";
 		
-		else if(value1.equals("BOTTOM")&&value2.equals("BOTTOM"))
+		else  if (value1.equals("BOTTOM")&&value2.equals("BOTTOM"))
 			return "BOTTOM";
-		else if(value1.equals("ODD"))
+		else  if (value1.equals("ODD"))
 			return "ODD";
 		else
 			return "EVEN";
@@ -118,7 +117,7 @@ public class Question2 extends Question {
 		   matchList.add(regexMatcher.group(1));//Fetching Group from String
 		}
 		for(String str:matchList) {
-			   if(validate(str.substring(1,str.length()-1),last))
+			    if (validate(str.substring(1,str.length()-1),last))
 				   return true; // it is enough that one conjunction will be true
 		}
 		return false;
@@ -129,7 +128,7 @@ public class Question2 extends Question {
 		
 		String[] arr=andCondition.split(" ");
 		for(int i=0; i<arr.length/2; i++) {
-			if(!(arr[i].equals(last.state.get(arr[i+1]))))
+			 if (!(arr[i].equals(last.state.get(arr[i+1]))))
 				return false;
 		}
 		return true;

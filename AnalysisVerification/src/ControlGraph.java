@@ -8,9 +8,9 @@ import java.util.Set;
 public class ControlGraph {
 	
 	List<Vertex> vertices;
-	Map<String,Vertex> names;
+	Map<String, Vertex> names;
 	
 	public ControlGraph() {
-		vertices=new ArrayList<Vertex>();
+		vertices = new ArrayList<Vertex>();
 	}
 }
