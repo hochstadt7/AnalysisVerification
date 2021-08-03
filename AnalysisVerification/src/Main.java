@@ -31,10 +31,10 @@ public class Main {
 		String popName = ""; // the label of the vertex we pop at the chaotic iteration
 		
 		// initialization
-		controlGraph.vertices.get(0).state = Manager.initializeToBottom(varList,"TOP");
-		int numOfVars=varList.length;
-		for (int i = 1; i<numOfVars; i++) {
-			controlGraph.vertices.get(i).state = Manager.initializeToBottom(varList,"BOTTOM");
+		controlGraph.vertices.get(0).state = Manager.initializeState(varList,"TOP");
+		int numOfVertex=controlGraph.vertices.size();
+		for (int i = 1; i<numOfVertex; i++) {
+			controlGraph.vertices.get(i).state = Manager.initializeState(varList,"BOTTOM");
 		}
 
 		Set<String> workList = new HashSet<>(controlGraph.names.keySet());
@@ -53,7 +53,7 @@ public class Main {
 			
 			// the new state of our current vertex is the union of all vertices point to the vertex, after activation of the corresponding abstract function
 			for (Entry<Vertex, String> entry : controlGraph.vertices.get(index).pointedBy.entrySet()) {
-				newState = question1.union(newState, question1.activateAbstractFunction(entry.getKey().state, entry.getValue()), varList);
+				newState = question1.join(newState, question1.activateAbstractFunction(entry.getKey().state, entry.getValue()), varList);
 			}
 			
 			if (newState != controlGraph.vertices.get(index).state) {

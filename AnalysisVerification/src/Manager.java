@@ -8,7 +8,7 @@ import java.util.Set;
 public class Manager {
 
 	// states are initialized to hold BOTTOMS as abstract value
-	public static Map<String, String> initializeToBottom(String[] varList, String val){
+	public static Map<String, String> initializeState(String[] varList, String val){
 		Map<String,String> init = new HashMap<>();
 		
 		for (int i = 0; i < varList.length; i++) {
@@ -47,6 +47,17 @@ public class Manager {
 		}
 		controlGraph.names = names;
 		return controlGraph;
+	}
+	
+	public static boolean isNum(String possibleNum) {
+		try { // constant assignment
+			int isOk=Integer.parseInt(possibleNum);
+			return true;
+		}
+		
+		catch(NumberFormatException e){
+			return false;
+		}
 	}
 	
 }

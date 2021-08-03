@@ -25,8 +25,16 @@ public class Question1 extends Question {
 			if(split[1].contains("!")) { // inequality
 				
 				// condition satisfied, nothing changes
-				if((variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==1)
-						||(variables.get(split[0]).equals("ODD")&&Integer.parseInt(split[2])%2==0)) {
+				boolean checkNum=Manager.isNum(split[2]);
+				if(checkNum) {
+					if((variables.get(split[0]).equals("EVEN")&&Integer.parseInt(split[2])%2==1) // need to check split[2] is number or var
+							||(variables.get(split[0]).equals("ODD")&&Integer.parseInt(split[2])%2==0)) {
+						return output;
+					}
+				}
+				
+				else if((variables.get(split[0]).equals("EVEN")&&variables.get(split[2]).equals("ODD")) // need to check split[2] is "TOP" or "BOTTOM"?
+						||(variables.get(split[0]).equals("ODD")&&variables.get(split[2]).equals("EVEN"))) {
 					return output;
 				}
 				
@@ -63,7 +71,7 @@ public class Question1 extends Question {
 			int equal=command.indexOf("=");
 			String afterEqual=command.substring(equal+2); // we stepped over the space
 			afterEqual=afterEqual.substring(afterEqual.length()-1); // got rid of ")"
-			String beforeEqual=command.substring(1,equal-1); // got rid of "(" and the space
+			String beforeEqual=command.substring(0,equal-1); // got rid of "(" and the space
 			String[] splitAfter=afterEqual.split(" ");
 			if(afterEqual.contains("+")|| afterEqual.contains("-")) { // operator assignment
 				String tmp=variables.get(splitAfter[0]);
@@ -85,17 +93,17 @@ public class Question1 extends Question {
 			
 			else {
 				String tmp="";
-				try { // constant assignment
+				if (Manager.isNum(splitAfter[0])) {
 					int isNum=Integer.parseInt(splitAfter[0]);
 					tmp=(isNum%2==0?"EVEN":"ODD");
 				}
 				
-				catch(NumberFormatException e){ // variable assignment
+				
+				else{ // variable assignment
 					tmp=variables.get(splitAfter[0]);
 				}
-				finally {
-					output.put(beforeEqual, tmp);
-				}   
+				
+				output.put(beforeEqual, tmp);   
 			}
 			
 		}
@@ -106,7 +114,7 @@ public class Question1 extends Question {
 	}
 	
 	
-	private String unionPointWise(String value1, String value2) {
+	private String joinPointWise(String value1, String value2) {
 
 		if((value1.equals("TOP")||value2.equals("TOP"))||(value1.equals("EVEN")&&value2.equals("ODD"))||(value1.equals("ODD")&&value2.equals("EVEN")))
 			return "TOP";
@@ -121,12 +129,12 @@ public class Question1 extends Question {
 	}
 	
 	@Override
-	public Map<String, String> union(Map<String, String> value1, Map<String, String> value2,String []varList){
+	public Map<String, String> join(Map<String, String> value1, Map<String, String> value2,String []varList){
 		
 		Map<String, String> output=new HashMap<String, String>();
-		// union pointwise
+		// join pointwise
 		for(String str:varList) {
-			output.put(str, unionPointWise(value1.get(str),value2.get(str)));
+			output.put(str, joinPointWise(value1.get(str),value2.get(str)));
 		}
 		return output;
 	}
