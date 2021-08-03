@@ -17,6 +17,6 @@ public class Vertex {
 		pointTo = new ArrayList<Vertex>();
 		
 		this.label = label;
-		this.state = Manager.initializeToBottom(varList);
+		this.state = null;
 	}
 }

@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
@@ -11,12 +13,14 @@ public class Main {
 	
 
 	//expected input format: list of vars with one space separator, than each line has vertex- 2 spaces- command- 2 spaces- vertex
-	public static void main(String[] args) {
-		question1 = new Question1();
-		String input = args[0];
+	public static void main(String[] args) throws FileNotFoundException {
 		
-		Scanner in = new Scanner(input).useDelimiter(" ");
+		question1 = new Question1();
+		//String input = args[0];
+		
+		Scanner in = new Scanner(new File("./AnalysisVerification/src/Input.txt")).useDelimiter(" ");
 		String[] varList = in.nextLine().split(" "); // first line is the variables
+		System.out.println(varList);
 		ControlGraph controlGraph = Manager.buildGraph(in, varList);
 		System.out.println(chaoticIteration(controlGraph, varList));
 	}
@@ -26,9 +30,12 @@ public class Main {
 
 		String popName = ""; // the label of the vertex we pop at the chaotic iteration
 		
-		/*for (int i = 0; i<numOfVars; i++) { already happens in the vertex constructor
-			controlGraph.vertices[i].state = Manager.initializeToBottom(numOfVars);
-		}*/
+		// initialization
+		controlGraph.vertices.get(0).state = Manager.initializeToBottom(varList,"TOP");
+		int numOfVars=varList.length;
+		for (int i = 1; i<numOfVars; i++) {
+			controlGraph.vertices.get(i).state = Manager.initializeToBottom(varList,"BOTTOM");
+		}
 
 		Set<String> workList = new HashSet<>(controlGraph.names.keySet());
 		

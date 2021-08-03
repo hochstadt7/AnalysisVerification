@@ -8,11 +8,11 @@ import java.util.Set;
 public class Manager {
 
 	// states are initialized to hold BOTTOMS as abstract value
-	public static Map<String, String> initializeToBottom(String[] varList){
+	public static Map<String, String> initializeToBottom(String[] varList, String val){
 		Map<String,String> init = new HashMap<>();
-		init.put(varList[0], "TOP"); // only the first vertex is initialized to TOP
-		for (int i = 1; i < varList.length; i++) {
-			init.put(varList[i], "BOTTOM");
+		
+		for (int i = 0; i < varList.length; i++) {
+			init.put(varList[i], val);
 		}
 		return init;
 	}
@@ -20,12 +20,12 @@ public class Manager {
 	// build graph based on the input
 	public static ControlGraph buildGraph(Scanner in, String []varList) {
 		ControlGraph controlGraph = new ControlGraph();
-		Set<String> labels = new HashSet<>(); // to remember for which variables we have already created a vertex
+		Set<String> labels = new HashSet<>(); // to remember for which vertices we have already created a vertex
 		Map<String, Vertex> names = new HashMap<>(); //map between variables names, and vertices with those names as labels
 		while(in.hasNextLine()) {
 			String[] line = in.nextLine().split(" ");
 			String source = line[0];
-			String[] subarray = Arrays.copyOfRange(line, 1, line.length-2);
+			String[] subarray = Arrays.copyOfRange(line, 1, line.length-1);
 			String command = String.join(" ", subarray).trim();
 			String target = line[line.length-1];
 			Vertex src;
