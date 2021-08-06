@@ -27,7 +27,6 @@ public class Main {
 	
 	// based on the algorithm in lecture 7, page 108
 	public static boolean chaoticIteration(ControlGraph controlGraph, String[] varList) {
-
 		String popName = ""; // the label of the vertex we pop at the chaotic iteration
 		
 		// initialization
@@ -39,9 +38,8 @@ public class Main {
 
 		Set<String> workList = new HashSet<>(controlGraph.names.keySet());
 		
-		while(!workList.isEmpty()) { // need to check edge case where there is no variable at the beginning?
-			
-			for (String name:controlGraph.names.keySet()) { // is there better way to remove item from a set, and get his value? I hate Sets in Java
+		while (!workList.isEmpty()) { // need to check edge case where there is no variable at the beginning?
+			for (String name : controlGraph.names.keySet()) { // is there better way to remove item from a set, and get his value? I hate Sets in Java
 				if (workList.contains(name)) { // supposed to happen at some iteration
 					workList.remove(name);
 					popName = name;

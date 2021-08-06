@@ -6,9 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Question2 extends Question {
-	
-	
-	
 	@Override
 	Map<String, String> activateAbstractFunction(Map<String, String> variables, String command) {
 		
