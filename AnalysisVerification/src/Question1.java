@@ -4,18 +4,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import ast.*;
 
 public class Question1 extends Question {
-	
-	
-	
 	@Override
-	Map<String, String> activateAbstractFunction(Map<String, String> variables, String command) {
-		
-		Map<String, String> output=new HashMap<> (variables); // make a copy
-		
-		
-		if(command.equals("skip"))
+	Map<String, String> applyAbstractFunction(Map<String, String> variables, Command command) {
+
+		Map<String, String> output = new HashMap<>(variables); // make a copy
+
+		if (command.equals("skip"))
 			return output; // state hasn't changed
 		
 		/* we need to discuss about assume a bit*/
@@ -142,7 +139,7 @@ public class Question1 extends Question {
 	@Override
 	
 	boolean assertion(String assertCommand,Vertex last) {
-		List<String> matchList = new ArrayList<String>();
+		List<String> matchList = new ArrayList<>();
 		Pattern regex = Pattern.compile("\\((.*?)\\)"); //find all the parenthesis
 		Matcher regexMatcher = regex.matcher(assertCommand);
 

@@ -1,0 +1,126 @@
+/*************/
+/* IMPORTS */
+/*************/
+
+import java_cup.runtime.*;
+import ast.*;
+import java.util.List;
+import java.util.ArrayList;
+
+parser code
+{:
+	public Lexer lexer;
+
+	public Parser(Lexer lexer)
+	{
+		super(lexer);
+		this.lexer = lexer;
+	}
+	public void report_error(String message, Object info)
+	{
+    System.out.print("Syntax error at line " + lexer.getLine() + " of input\n");
+		// System.out.print("ERROR >> ");
+		// System.out.print("[");
+		// System.out.print(lexer.getLine());
+		// System.out.print(":");
+		// System.out.print(lexer.getCharPos());
+		// System.out.print("] ");
+		System.exit(1);
+	}
+:}
+
+/************************/
+/* CUSTOMIZE CUP PARSER */
+/************************/
+scan with
+{:
+	Symbol s;
+	s = lexer.next_token();
+	// System.out.print(s.sym);
+	// System.out.print("[");
+	// System.out.print(lexer.getLine());
+	// System.out.print(":");
+	// System.out.print(lexer.getCharPos());
+	// System.out.print("] ");
+	// System.out.print(sym.terminalNames[s.sym]);
+	// if (s.value != null)
+	// {
+	//	System.out.print("( ");
+	//	System.out.print(s.value);
+	//	System.out.print(" )");
+	// }
+	// System.out.print("\n");
+	return s;
+:};
+
+/*************/
+/* TERMINALS */
+/*************/
+terminal LPAREN;
+terminal RPAREN;
+terminal ANY_INT;
+terminal ASSIGN;
+terminal EQUALS;
+terminal NEQUALS;
+terminal INCREMENT;
+terminal DECREMENT;
+terminal ASSUME;
+terminal ASSERT;
+terminal SKIP;
+terminal TRUE;
+terminal FALSE;
+terminal ODD;
+terminal EVEN;
+
+/* tokens with values */
+terminal String ID;
+terminal Integer NUMBER;
+
+/*****************/
+/* NON TERMINALS */
+/*****************/
+non terminal Command Command;
+non terminal Expr Expr;
+non terminal List<List<Predicate>> ORC;
+non terminal List<Predicate> ANDC;
+non terminal Predicate Predicate;
+
+/***********************/
+/* OPERATOR PRECEDENCE */
+/***********************/
+
+/************************/
+/* INITIAL NON TERMINAL */
+/************************/
+start with Command;
+
+/********************/
+/* PRODUCTION RULES */
+/********************/
+
+Command           ::=   SKIP                                           {: RESULT = new SkipCmd(); :}
+                  |     ID:lv ASSIGN ID:rv INCREMENT                   {: RESULT = new VarAssignCmd(lv, rv, 1); :}
+                  |     ID:lv ASSIGN ID:rv DECREMENT                   {: RESULT = new VarAssignCmd(lv, rv, -1); :}
+                  |     ID:lv ASSIGN ID:rv                             {: RESULT = new VarAssignCmd(lv, rv, 0); :}
+                  |     ID:lv ASSIGN NUMBER:num                        {: RESULT = new IntAssignCmd(lv, num); :}
+                  |     ID:lv ASSIGN ANY_INT                           {: RESULT = new IntAssignCmd(lv, null); :}
+                  |     ASSUME LPAREN Expr:expr RPAREN                 {: RESULT = new AssumeCmd(expr); :}
+                  |     ASSERT ORC:dnf                                 {: RESULT = new AssertCmd(dnf); :};
+
+Expr              ::=   ID:rv EQUALS ID:lv                             {: RESULT = new VarEqualityExpr(rv, lv, true); :}
+                  |     ID:rv NEQUALS ID:lv                            {: RESULT = new VarEqualityExpr(rv, lv, false); :}
+                  |     ID:rv EQUALS NUMBER:num                        {: RESULT = new IntEqualityExpr(rv, num, true); :}
+                  |     ID:rv NEQUALS NUMBER:num                       {: RESULT = new IntEqualityExpr(rv, num, false); :}
+                  |     TRUE                                           {: RESULT = new TrueExpr(); :}
+                  |     FALSE                                          {: RESULT = new FalseExpr(); :};
+
+ORC               ::=   ORC:andClauseList LPAREN ANDC:andClause RPAREN   {: andClauseList.add(andClause); RESULT = andClauseList; :}
+                  |     /* empty list */                                 {: RESULT = new ArrayList<List<Predicate>>(); :};
+
+ANDC              ::=   ANDC:predicateList Predicate:pred              {: predicateList.add(pred); RESULT = predicateList; :}
+                  |     /* empty list */                               {: RESULT = new ArrayList<Predicate>(); :};
+
+Predicate         ::=   ODD ID:id                                      {: RESULT = new OddPred(id); :}
+                  |     EVEN ID:id                                     {: RESULT = new EvenPred(id); :};
+
+

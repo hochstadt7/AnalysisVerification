@@ -6,8 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Question2 extends Question {
-	@Override
-	Map<String, String> activateAbstractFunction(Map<String, String> variables, String command) {
+	Map<String, String> applyAbstractFunction(Map<String, String> variables, String command) {
 		
 		Map<String, String> output=new HashMap<> (variables); // make a copy
 		
@@ -92,8 +91,7 @@ public class Question2 extends Question {
 		
 	}
 	
-	@Override
-	public Map<String, String> union(Map<String, String> value1, Map<String, String> value2,String []varList){
+	public Map<String, String> join(Map<String, String> value1, Map<String, String> value2,String []varList){
 		
 		Map<String, String> output=new HashMap<String, String>();
 		//union pointwise
@@ -103,8 +101,6 @@ public class Question2 extends Question {
 		return output;
 	}
 
-	@Override
-	
 	boolean assertion(String assertCommand,Vertex last) {
 		List<String> matchList = new ArrayList<String>();
 		Pattern regex = Pattern.compile("\\((.*?)\\)"); //find all the parenthesis
