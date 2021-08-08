@@ -14,7 +14,7 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		question1 = new Question1();
 
-		Scanner in = new Scanner(new File("./AnalysisVerification/src/Input.txt")).useDelimiter(" ");
+		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/Input.txt")).useDelimiter(" ");
 		String[] varList = in.nextLine().split(" "); // first line is the variables
 		System.out.println(varList);
 		ControlGraph controlGraph = Manager.buildGraph(in);
