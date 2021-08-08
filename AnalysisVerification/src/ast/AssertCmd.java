@@ -11,4 +11,13 @@ public class AssertCmd extends Command {
     public AssertCmd(List<List<Predicate>> dnf) {
         this.dnf = dnf;
     }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
+    public boolean acceptVerifier(AssertVerifyVisitor v) {
+        return v.visit(this);
+    }
 }

@@ -10,4 +10,9 @@ public class AssumeCmd extends Command {
     public AssumeCmd(Expr expr) {
         this.expr = expr;
     }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
 }

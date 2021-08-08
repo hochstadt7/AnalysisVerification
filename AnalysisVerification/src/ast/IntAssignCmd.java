@@ -22,4 +22,9 @@ public class IntAssignCmd extends Command {
             this.anyNum = true;
         }
     }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
 }

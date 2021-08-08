@@ -22,4 +22,8 @@ public class VarEqualityExpr extends Expr {
         this.rv = rv;
         this.isEqual = isEqual;
     }
+
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import ast.Command;
 
-
 public class Vertex {
 	String label;
 	Map<Vertex, Command> pointedBy; // incoming neighbor and command associated with edge

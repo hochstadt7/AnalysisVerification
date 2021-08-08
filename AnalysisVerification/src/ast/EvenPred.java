@@ -10,4 +10,9 @@ public class EvenPred extends Predicate {
     public String getId() {
         return id;
     }
+
+    @Override
+    public boolean acceptVerifier(AssertVerifyVisitor v) {
+        return v.visit(this);
+    }
 }

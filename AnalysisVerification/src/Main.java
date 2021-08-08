@@ -2,6 +2,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.Map.Entry;
+
+import ast.AssertCmd;
+import ast.AssertVerifyVisitor;
 import ast.Command;
 
 public class Main {
@@ -35,7 +38,7 @@ public class Main {
 			
 			// the new state of our current vertex is given by join of all vertices point to the vertex, after applying the corresponding abstract function
 			for (Entry<Vertex, Command> entry : currNode.pointedBy.entrySet()) {
-				newState = question1.join(newState, question1.applyAbstractFunction(entry.getKey().state, entry.getValue()), varList);
+				newState = question1.join(newState, question1.applyAbstractFunction(entry.getKey().state, entry.getValue()));
 			}
 			
 			if (!newState.equals(currNode.state)) {
@@ -46,15 +49,18 @@ public class Main {
 			
 		}
 		for (Vertex v : controlGraph.namedVertices.values()) {
-			for (Entry<Vertex, String> entry : v.pointedBy.entrySet()) {
-				String command = entry.getValue();
-				if (command.contains("assert")) {
-					if (!question1.assertion(entry.getValue(), entry.getKey()))
+			AssertVerifyVisitor verifier = new AssertVerifyVisitor(v.state);
+			for (Entry<Vertex, Command> entry : v.pointedBy.entrySet()) {
+				Command command = entry.getValue();
+				if (command instanceof AssertCmd) {
+					((AssertCmd) command).acceptVerifier(verifier);
+					if (!verifier.assertionHolds()) {
 						return false;
+					}
 				}
 			}
 		}
-	
+
 		return true;
 	}
 

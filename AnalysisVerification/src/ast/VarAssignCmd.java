@@ -1,7 +1,7 @@
 package ast;
 
 public class VarAssignCmd extends Command {
-    public enum AssignType { SIMPLE, INCREMENT, DECREMENT }
+       public enum AssignType { SIMPLE, INCREMENT, DECREMENT }
 
     private final String lv;
     private final String rv;
@@ -27,5 +27,10 @@ public class VarAssignCmd extends Command {
             case 0 -> this.type = AssignType.SIMPLE;
             case -1 -> this.type = AssignType.DECREMENT;
         }
+    }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
     }
 }

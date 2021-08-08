@@ -22,4 +22,10 @@ public class IntEqualityExpr extends Expr{
          this.val = val;
          this.isEqual = isEqual;
      }
+
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
 }
