@@ -121,14 +121,14 @@ public class ParityVisitor implements Visitor {
 
         // Equality case
         if (varEqualityExpr.isEqual()) { // i = j
-            if (varEqualityExpr.getLv().equals(BOTTOM) || varEqualityExpr.getRv().equals(BOTTOM)) {
+            if (inState.get(varEqualityExpr.getLv()).equals(BOTTOM) || inState.get(varEqualityExpr.getRv()).equals(BOTTOM)) {
                 // equality never holds, nothing equals bottom, contradiction
                 newState = new HashMap<>(allBottoms);
-            } else if (varEqualityExpr.getLv().equals(TOP)) { // i (top) = j => i gets j's parity
+            } else if (inState.get(varEqualityExpr.getLv()).equals(TOP)) { // i (top) = j => i gets j's parity
                 newState.put(varEqualityExpr.getLv(), inState.get(varEqualityExpr.getRv()));
-            } else if (varEqualityExpr.getRv().equals(TOP)) {  // i = j (top) => j gets i's parity
+            } else if (inState.get(varEqualityExpr.getRv()).equals(TOP)) {  // i = j (top) => j gets i's parity
                 newState.put(varEqualityExpr.getRv(), inState.get(varEqualityExpr.getLv()));
-            } else if (!varEqualityExpr.getLv().equals(varEqualityExpr.getRv())) {
+            } else if (!inState.get(varEqualityExpr.getLv()).equals(inState.get(varEqualityExpr.getRv()))) {
                 // i and j are even/odd and different - i = j is a contradiction
                 newState = new HashMap<>(allBottoms);
             }
