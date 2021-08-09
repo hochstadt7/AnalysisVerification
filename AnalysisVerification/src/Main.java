@@ -48,14 +48,17 @@ public class Main {
 				// append all vertices pointed by our current vertex
 				workList.addAll(currNode.pointsTo); // problem: inserts existing item!
 			}
-			
+			// make sure no duplicates in work list
+			Set<Vertex> set = new HashSet<>(workList);
+			workList.clear();
+			workList.addAll(set);
 		}
 		for (Vertex v : controlGraph.namedVertices.values()) {
 			AssertVerifyVisitor verifier = new AssertVerifyVisitor(v.state);
 			for (Entry<Vertex, Command> entry : v.pointedBy.entrySet()) {
 				Command command = entry.getValue();
 				if (command instanceof AssertCmd) {
-					boolean isOk=((AssertCmd) command).acceptVerifier(verifier);
+					boolean isOk = ((AssertCmd) command).acceptVerifier(verifier);
 					if (!isOk) {
 						return false;
 					}

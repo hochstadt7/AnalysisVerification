@@ -3,12 +3,7 @@ package ast;
 import java.util.*;
 
 public class AssertVerifyVisitor {
-    //boolean assertHolds = true;
     Map<String, String> currState;
-
-    /*public boolean assertionHolds() {
-        return assertHolds;
-    }*/
 
     public AssertVerifyVisitor(Map<String, String> currState) {
         this.currState = currState;
