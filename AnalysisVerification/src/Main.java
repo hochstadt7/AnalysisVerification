@@ -27,7 +27,9 @@ public class Main {
 		// initialization
 		controlGraph.start.state = Manager.initializeState(varList,"TOP");
 		for (Vertex v : controlGraph.namedVertices.values()) {
-			v.state = Manager.initializeState(varList,"BOTTOM");
+			if (v.state == null) {
+				v.state = Manager.initializeState(varList,"BOTTOM");
+			}
 		}
 
 		List<Vertex> workList = new ArrayList<>(controlGraph.namedVertices.values());
@@ -44,7 +46,7 @@ public class Main {
 			if (!newState.equals(currNode.state)) {
 				controlGraph.namedVertices.get(currNode.label).state = newState;
 				// append all vertices pointed by our current vertex
-				workList.addAll(currNode.pointsTo);
+				workList.addAll(currNode.pointsTo); // problem: inserts existing item!
 			}
 			
 		}
@@ -53,8 +55,8 @@ public class Main {
 			for (Entry<Vertex, Command> entry : v.pointedBy.entrySet()) {
 				Command command = entry.getValue();
 				if (command instanceof AssertCmd) {
-					((AssertCmd) command).acceptVerifier(verifier);
-					if (!verifier.assertionHolds()) {
+					boolean isOk=((AssertCmd) command).acceptVerifier(verifier);
+					if (!isOk) {
 						return false;
 					}
 				}
