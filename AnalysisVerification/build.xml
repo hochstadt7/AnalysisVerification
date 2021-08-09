@@ -1,4 +1,4 @@
-<project name="AnalysisVerification" default="dist" basedir=".">
+<project name="AnalysisVerification" default="compile" basedir=".">
     <!-- set global properties for this build -->
     <property name="src"      location="${basedir}/src"/>
     <property name="cup"      location="${src}/cup"/>
@@ -32,19 +32,8 @@
         </javac>
     </target>
 
-    <target name="dist" depends="compile"
-            description="generate the distribution">
-        <jar jarfile="mjavac.jar" basedir="${build}">
-            <manifest>
-                <attribute name="Main-Class" value="Main"/>
-                <attribute name="Class-Path" value="${tools}/java-cup-11b-runtime.jar ${tools}/java-cup-11b.jar ${tools}/jakarta.xml.bind-api-2.3.3.jar ${tools}/jaxb-impl-2.3.3.jar ${tools}/jakarta.activation-api-1.2.2.jar ${tools}/jaxb-jxc-2.3.3.jar"/>
-            </manifest>
-        </jar>
-    </target>
-
     <target name="clean"
             description="clean up">
-        <delete file="mjavac.jar"/>
         <delete dir="${build}"/>
         <delete file="${src}/Lexer.java"/>
         <delete file="${src}/Parser.java"/>

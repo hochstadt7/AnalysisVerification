@@ -16,7 +16,6 @@ public class Main {
 
 		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/Input.txt")).useDelimiter(" ");
 		String[] varList = in.nextLine().split(" "); // first line is the variables
-		System.out.println(varList);
 		ControlGraph controlGraph = Manager.buildGraph(in);
 		System.out.println(chaoticIteration(controlGraph, varList));
 	}
