@@ -15,6 +15,11 @@ public class Question2 extends Question {
 	}
 
 	@Override
+	Map<String, Map<String, String>> computeRelations(Map<String, String> state) {
+		return null;
+	}
+
+	@Override
 	Map<String, String> join(Map<String, String> state1, Map<String, String> state2) {
 		return null;
 	}

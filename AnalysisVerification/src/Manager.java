@@ -1,4 +1,3 @@
-import java.io.FileReader;
 import java.io.StringReader;
 import java.util.*;
 import ast.Command;
@@ -12,6 +11,20 @@ public class Manager {
 			varValues.put(s, val);
 		}
 		return varValues;
+	}
+
+	public static Map<String, Map<String, String>> initRelationalState(String[] varList, String val) {
+		Map<String, Map<String, String>> relations = new HashMap<>();
+		for (String var : varList) {
+			Map<String, String> varRelations = new HashMap<>();
+			for (String otherVar : varList) {
+				if (!var.equals(otherVar)) {
+					varRelations.put(otherVar, val);
+				}
+			}
+			relations.put(var, varRelations);
+		}
+		return relations;
 	}
 	
 	// build graph based on the input

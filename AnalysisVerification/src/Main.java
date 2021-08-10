@@ -20,14 +20,15 @@ public class Main {
 		System.out.println(chaoticIteration(controlGraph, varList));
 	}
 
-	
 	// based on the algorithm in lecture 7, page 108
 	public static boolean chaoticIteration(ControlGraph controlGraph, String[] varList) {
 		// initialization
 		controlGraph.start.state = Manager.initializeState(varList,"TOP");
+		controlGraph.start.relationalState = Manager.initRelationalState(varList, "TOP");
 		for (Vertex v : controlGraph.namedVertices.values()) {
 			if (v.state == null) {
 				v.state = Manager.initializeState(varList,"BOTTOM");
+				v.relationalState = Manager.initRelationalState(varList, "BOTTOM");
 			}
 		}
 
@@ -36,22 +37,29 @@ public class Main {
 		while (!workList.isEmpty()) { // need to check edge case where there is no variable at the beginning?
 			Vertex currNode = workList.remove(0);
 			Map<String, String> newState = currNode.state;
+			Map<String, Map<String, String>> newDiffs = currNode.relationalState;
 			
 			// the new state of our current vertex is given by join of all vertices point to the vertex, after applying the corresponding abstract function
 			for (Entry<Vertex, Command> entry : currNode.pointedBy.entrySet()) {
-				newState = question1.join(newState, question1.applyAbstractFunction(entry.getKey().state, entry.getValue()));
+				Map<String, String> resultingState = question1.applyAbstractFunction(entry.getKey().state, entry.getValue());
+				Map<String, Map<String, String>> resultingDiffs = question1.computeRelations(resultingState);
+				newState = question1.join(newState, resultingState);
+				newDiffs = question1.joinRelState(newDiffs, resultingDiffs);
 			}
 			
-			if (!newState.equals(currNode.state)) {
+			if (!newState.equals(currNode.state)) { // if the regular state doesn't change, then the diffs don't change either
 				controlGraph.namedVertices.get(currNode.label).state = newState;
+				controlGraph.namedVertices.get(currNode.label).relationalState = newDiffs;
 				// append all vertices pointed by our current vertex
-				workList.addAll(currNode.pointsTo); // problem: inserts existing item!
+				workList.addAll(currNode.pointsTo);
 			}
+
 			// make sure no duplicates in work list
 			Set<Vertex> set = new HashSet<>(workList);
 			workList.clear();
 			workList.addAll(set);
 		}
+
 		for (Vertex v : controlGraph.namedVertices.values()) {
 			AssertVerifyVisitor verifier = new AssertVerifyVisitor(v.state);
 			for (Entry<Vertex, Command> entry : v.pointedBy.entrySet()) {
