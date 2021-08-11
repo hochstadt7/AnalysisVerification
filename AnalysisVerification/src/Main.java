@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		question1 = new Question1();
 
-		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/Input.txt")).useDelimiter(" ");
+		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/DiffParity.txt")).useDelimiter(" ");
 		String[] varList = in.nextLine().split(" "); // first line is the variables
 		ControlGraph controlGraph = Manager.buildGraph(in);
 		System.out.println(chaoticIteration(controlGraph, varList));

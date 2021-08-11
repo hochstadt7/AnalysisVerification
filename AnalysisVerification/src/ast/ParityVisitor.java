@@ -271,6 +271,9 @@ public class ParityVisitor implements Visitor {
             } else if (prevRvVal.equals(TOP)) {  // i = j (top) => j gets i's parity
                 String newRvVal = prevLvVal;
                 String rv = varEqualityExpr.getRv();
+                
+                internal = inDiff.get(rv);
+                
                 newState.put(rv, newRvVal);
                 for (String var2 : internal.keySet()) {
                     String currAbsVal2 = inState.get(var2);
