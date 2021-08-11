@@ -8,6 +8,7 @@ public interface sym {
   /* terminals */
   public static final int RPAREN = 3;
   public static final int ASSERT = 11;
+  public static final int SUM = 19;
   public static final int DECREMENT = 9;
   public static final int TRUE = 13;
   public static final int LPAREN = 2;
@@ -44,7 +45,8 @@ public interface sym {
   "ODD",
   "EVEN",
   "ID",
-  "NUMBER"
+  "NUMBER",
+  "SUM"
   };
 }
 

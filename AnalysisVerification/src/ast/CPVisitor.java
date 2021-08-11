@@ -194,18 +194,18 @@ public class CPVisitor implements Visitor {
                 newState = new HashMap<>(allBottoms);
                 newSums = new HashMap<>(allBottomsSums);
             } else if (prevLvVal.equals(TOP)) { // i (top) = j => i gets j's value
-            	// rvVal can be odd, even, top. if top- no change
-            	if(!prevRvVal.equals(TOP)) {
+            	// rvVal can be odd, even, top. If top- no change
+            	if (!prevRvVal.equals(TOP)) {
             		Integer newLvVal = prevRvVal;
                     newState.put(lv, newLvVal);
                     updateSumsConstAssign(internal, lv, newLvVal);
                 }    
                 
             }
-            else if(prevRvVal.equals(TOP)) {
+            else if (prevRvVal.equals(TOP)) {
             	
-            	//lvVal can be odd, even, top. if top- no change
-            	if(!prevLvVal.equals(TOP)) {
+            	//lvVal can be odd, even, top. If top- no change
+            	if (!prevLvVal.equals(TOP)) {
             		internal = inSums.get(rv);
             		Integer newRvVal = prevLvVal;
                     newState.put(rv, newRvVal);

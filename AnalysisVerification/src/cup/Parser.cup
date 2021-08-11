@@ -66,6 +66,7 @@ terminal INCREMENT;
 terminal DECREMENT;
 terminal ASSUME;
 terminal ASSERT;
+terminal SUM;
 terminal SKIP;
 terminal TRUE;
 terminal FALSE;

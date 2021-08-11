@@ -19,10 +19,10 @@ public class Question2  { //extends Question {
 	private Integer joinPointWise(Integer value1, Integer value2) { // Integer works with .equals?
 		boolean eitherIsTop = (value1.equals(CPVisitor.TOP) || value2.equals(CPVisitor.TOP));
 		boolean bothBottom = (value1.equals(CPVisitor.BOTTOM) && value2.equals(CPVisitor.BOTTOM));
-		boolean notSame = (!value1.equals(CPVisitor.TOP) && !value1.equals(CPVisitor.BOTTOM)
-			&&!value2.equals(CPVisitor.TOP) && !value2.equals(CPVisitor.BOTTOM)&& !value2.equals(value1));
+		boolean notSameActualVal = (!value1.equals(CPVisitor.TOP) && !value1.equals(CPVisitor.BOTTOM)
+			&& !value2.equals(CPVisitor.TOP) && !value2.equals(CPVisitor.BOTTOM) && !value2.equals(value1));
 		
-		if (eitherIsTop || notSame)
+		if (eitherIsTop || notSameActualVal)
 			return CPVisitor.TOP ;
 		else if (bothBottom)
 			return CPVisitor.BOTTOM;

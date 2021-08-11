@@ -100,6 +100,7 @@ INTEGER	= 0 | [1-9][0-9]*
     "FALSE"			{ return symbol(sym.FALSE); }
     "ODD"           { return symbol(sym.ODD); }
     "EVEN"          { return symbol(sym.EVEN); }
+    "SUM"			{ return symbol(sym.SUM); }
     {WhiteSpace}+   {/* do nothing */}
     {ID}			{ return symbol(sym.ID, new String(yytext())); }
     {INTEGER}		{ return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
