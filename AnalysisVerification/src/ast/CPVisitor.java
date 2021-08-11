@@ -166,9 +166,12 @@ public class CPVisitor implements Visitor {
             }
         } else { // i = K
             Integer currAbsVal1 = inState.get(var1);
-            if (currAbsVal1.equals(TOP)) {
-                newState.put(var1, val);
-                updateSumsConstAssign(internal, var1, intEqualityExpr.getVal());
+            if (currAbsVal1.equals(BOTTOM)) {
+            	newState = new HashMap<>(allBottoms);
+                newSums = new HashMap<>(allBottomsSums);
+            } else  { // includes the cases where i is TOP or number
+            	newState.put(var1, val);
+                updateSumsConstAssign(internal, var1, val);
             }
         }
     }
@@ -181,7 +184,7 @@ public class CPVisitor implements Visitor {
         Integer prevRvVal = inState.get(rv);
         Map<String, Integer> internal = inSums.get(lv);
         if (!varEqualityExpr.isEqual()) { // i != j
-            if (prevRvVal.equals(prevLvVal)) { // contradiction
+            if (prevRvVal.equals(prevLvVal) && !prevRvVal.equals(TOP) && !prevRvVal.equals(BOTTOM)) { // contradiction // need to check also that not TOP or BOTTOM
                 newState = new HashMap<>(allBottoms);
                 newSums = new HashMap<>(allBottomsSums);
             }
@@ -191,12 +194,30 @@ public class CPVisitor implements Visitor {
                 newState = new HashMap<>(allBottoms);
                 newSums = new HashMap<>(allBottomsSums);
             } else if (prevLvVal.equals(TOP)) { // i (top) = j => i gets j's value
-                Integer newLvVal = prevRvVal;
-                newState.put(lv, newLvVal);
-                if (newLvVal.equals(TOP)) {
-                    // stopped here
-                }
+            	// rvVal can be odd, even, top. if top- no change
+            	if(!prevRvVal.equals(TOP)) {
+            		Integer newLvVal = prevRvVal;
+                    newState.put(lv, newLvVal);
+                    updateSumsConstAssign(internal, lv, newLvVal);
+                }    
+                
             }
+            else if(prevRvVal.equals(TOP)) {
+            	
+            	//lvVal can be odd, even, top. if top- no change
+            	if(!prevLvVal.equals(TOP)) {
+            		internal = inSums.get(rv);
+            		Integer newRvVal = prevLvVal;
+                    newState.put(rv, newRvVal);
+                    updateSumsConstAssign(internal, rv, newRvVal);
+                }
+            	
+            } else if (!prevRvVal.equals(prevLvVal)) {
+                // i and j are even/odd and different - i = j is a contradiction
+                newState = new HashMap<>(allBottoms);
+                newSums = new HashMap<>(allBottomsSums);
+            }
+
         }
     }
 
