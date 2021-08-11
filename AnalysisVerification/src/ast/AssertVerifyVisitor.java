@@ -11,7 +11,7 @@ public class AssertVerifyVisitor {
     private Map<String, Map<String, Integer>> initCombination(){
     	Map<String, Map<String, Integer>> bottoms = new HashMap<>();
         for (String var : currState.keySet()) {
-        	Map<String,Integer> internal=new HashMap<>();
+        	Map<String,Integer> internal = new HashMap<>();
         	for(String var2:currState.keySet()) {
         		if(!var.equals(var2)) {
         			internal.put(var2, 0);
@@ -29,36 +29,28 @@ public class AssertVerifyVisitor {
         this.countDiffParity = initCombination();
     }
     
-    private void updateNewDiff(Map<String, Map<String, Integer>> countRelation, String var1, String var2) {
+    private void incrementPredicateCounter(Map<String, Map<String, Integer>> countRelation, String var1, String var2) {
     	int count = countRelation.get(var1).get(var2);
-    	countRelation.get(var1).put(var2 ,count + 1);
-    	countRelation.get(var2).put(var1 ,count + 1); // same update- symmetric
+    	countRelation.get(var1).put(var2, count + 1);
+    	countRelation.get(var2).put(var1, count + 1); // same update- symmetric
     }
     
     private void checkRelationalParity(List<Predicate> andClause) {
-    	
     	int countOddPred = 0;
-    	String firstVal = andClause.get(0).getId();
-    	String secondVal = andClause.get(1).getId();
-    	
-    	
+    	String var1 = andClause.get(0).getId();
+    	String var2 = andClause.get(1).getId();
+
     	for (Predicate pred : andClause) {
         	if (pred instanceof OddPred) {
         		countOddPred++;
         	}
     	}
-    	
-        if (countOddPred%2 == 0) { // same parity
-        		
+        if (countOddPred % 2 == 0) { // same parity
         	// update counter
-        	updateNewDiff(countSameParity, firstVal, secondVal);
-        		
-        } else if (countOddPred%2 == 1) { // not same parity
-        		
-        	updateNewDiff(countDiffParity, firstVal, secondVal);
-        		
+        	incrementPredicateCounter(countSameParity, var1, var2);
+        } else if (countOddPred % 2 == 1) { // not same parity
+        	incrementPredicateCounter(countDiffParity, var1, var2);
         }
-        
     }
     
 
@@ -68,39 +60,36 @@ public class AssertVerifyVisitor {
         boolean anyTrue = false;
         for (List<Predicate> andClause : dnf) {
             boolean anyFalse = false;
-            int numOfPredicates = 0;
+            int numOfPredicates = andClause.size();
+            if (numOfPredicates == 2) {
+                checkRelationalParity(andClause);
+            }
+
             for (Predicate pred : andClause) {
-            	numOfPredicates++;
                 if (!pred.acceptVerifier(this)) {
                     anyFalse = true;
-                    
                 }
             }
-            if (numOfPredicates == 2) {
-            	checkRelationalParity(andClause);
-            }
-            
             if (!anyFalse) { // and clause holds
                 anyTrue = true;
                 break;
             }
         }
-        for (String var:currState.keySet()){
-        	for (String var2:currState.keySet()){
+        for (String var : currState.keySet()){
+        	for (String var2 : currState.keySet()){
         		if (!var.equals(var2)) {
         			if (countSameParity.get(var).get(var2) == 2) { // (EVEN var EVEN var2) (ODD var ODD var2)
-        				if (relationalState.get(var).get(var2).equals("EVEN"))
+        				if (relationalState.get(var).get(var2).equals(ParityVisitor.EVEN))
         					return true;
         			}
         			if (countDiffParity.get(var).get(var2) == 2) { // (EVEN var ODD var2) (ODD var EVEN var2)
-        				if (relationalState.get(var).get(var2).equals("ODD"))
+        				if (relationalState.get(var).get(var2).equals(ParityVisitor.ODD))
         					return true;
         			}
         		}
         		
         	}
         }
-        
         return anyTrue;
     }
 

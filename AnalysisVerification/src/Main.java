@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		question1 = new Question1();
 
-		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/DiffParity.txt")).useDelimiter(" ");
+		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/InfiniteWhileLoop.txt")).useDelimiter(" ");
 		String[] varList = in.nextLine().split(" "); // first line is the variables
 		ControlGraph controlGraph = Manager.buildGraph(in);
 		System.out.println(chaoticIteration(controlGraph, varList));
@@ -42,11 +42,8 @@ public class Main {
 			
 			// the new state of our current vertex is given by join of all vertices point to the vertex, after applying the corresponding abstract function
 			for (Entry<Vertex, Command> entry : currNode.pointedBy.entrySet()) {
-				//Map<String, String> resultingState = question1.applyAbstractFunction(entry.getKey().state, entry.getValue());
-				//Map<String, Map<String, String>> resultingDiffs = question1.computeRelations(resultingState);
 				ParityVisitor v = question1.applyAbstractFunction(entry.getKey().state,entry.getKey().relationalState, entry.getValue());
 				
-				//Map<String, Map<String, String>> resultingDiffs = question1.applyAbstractFunctionDiff(entry.getKey().relationalState, entry.getValue());
 				newState = question1.join(newState, v.getNewState());
 				newDiffs = question1.joinRelState(newDiffs, v.getNewDiff());
 			}
