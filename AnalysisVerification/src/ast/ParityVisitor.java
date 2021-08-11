@@ -28,7 +28,7 @@ public class ParityVisitor implements Visitor {
         Map<String, Map<String, String>> bottoms = new HashMap<>();
         for (String var : inState.keySet()) {
         	Map<String,String> internal=new HashMap<>();
-        	for(String var2:inState.keySet()) {
+        	for(String var2 : inState.keySet()) {
         		if(!var.equals(var2)) {
         			internal.put(var2, BOTTOM);
         		}
