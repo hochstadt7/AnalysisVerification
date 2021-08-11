@@ -4,9 +4,38 @@ import java.util.*;
 
 public class AssertVerifyVisitor {
     Map<String, String> currState;
+    Map<String, Map<String, String>> relationalState;
 
-    public AssertVerifyVisitor(Map<String, String> currState) {
+    public AssertVerifyVisitor(Map<String, String> currState, Map<String, Map<String, String>> relationalState) {
         this.currState = currState;
+        this.relationalState = relationalState;
+    }
+    
+    private boolean checkRelationalParity(List<Predicate> andClause) {
+    	
+    	int countOddPred = 0;
+    	
+    	
+    	for (Predicate pred : andClause) {
+        	if(pred instanceof OddPred) {
+        		countOddPred++;
+        	}
+    	}
+        	if(countOddPred%2==0) { // same parity
+        		if(relationalState.get(andClause.get(0).getId()).get(andClause.get(1).getId()).equals("EVEN")) {
+        			return true;
+        		}
+        		
+        	}
+        	
+        	if(countOddPred%2==1) { // not same parity
+        		if(relationalState.get(andClause.get(0).getId()).get(andClause.get(1).getId()).equals("ODD")) {
+        			return true;
+        		}
+        		
+        	}
+			return false;
+        
     }
 
     public boolean visit(AssertCmd assertCmd) {
@@ -15,12 +44,19 @@ public class AssertVerifyVisitor {
         boolean anyTrue = false;
         for (List<Predicate> andClause : dnf) {
             boolean anyFalse = false;
+            int numOfPredicates = 0;
             for (Predicate pred : andClause) {
+            	numOfPredicates++;
                 if (!pred.acceptVerifier(this)) {
                     anyFalse = true;
-                    break;
+                    
                 }
-            } if (!anyFalse) { // and clause holds
+            }
+            if(numOfPredicates==2) {
+            	if(checkRelationalParity(andClause)) {anyTrue=true; break;}
+            }
+            
+            if (!anyFalse) { // and clause holds
                 anyTrue = true;
                 break;
             }

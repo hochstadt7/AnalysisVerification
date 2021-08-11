@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import ast.AssertCmd;
 import ast.AssertVerifyVisitor;
 import ast.Command;
+import ast.ParityVisitor;
 
 public class Main {
 
@@ -36,18 +37,21 @@ public class Main {
 
 		while (!workList.isEmpty()) { // need to check edge case where there is no variable at the beginning?
 			Vertex currNode = workList.remove(0);
-			Map<String, String> newState = currNode.state;
-			Map<String, Map<String, String>> newDiffs = currNode.relationalState;
+			Map<String, String> newState = Manager.initializeState(varList,"BOTTOM");
+			Map<String, Map<String, String>> newDiffs = Manager.initRelationalState(varList, "BOTTOM");
 			
 			// the new state of our current vertex is given by join of all vertices point to the vertex, after applying the corresponding abstract function
 			for (Entry<Vertex, Command> entry : currNode.pointedBy.entrySet()) {
-				Map<String, String> resultingState = question1.applyAbstractFunction(entry.getKey().state, entry.getValue());
-				Map<String, Map<String, String>> resultingDiffs = question1.computeRelations(resultingState);
-				newState = question1.join(newState, resultingState);
-				newDiffs = question1.joinRelState(newDiffs, resultingDiffs);
+				//Map<String, String> resultingState = question1.applyAbstractFunction(entry.getKey().state, entry.getValue());
+				//Map<String, Map<String, String>> resultingDiffs = question1.computeRelations(resultingState);
+				ParityVisitor v = question1.applyAbstractFunction(entry.getKey().state,entry.getKey().relationalState, entry.getValue());
+				
+				//Map<String, Map<String, String>> resultingDiffs = question1.applyAbstractFunctionDiff(entry.getKey().relationalState, entry.getValue());
+				newState = question1.join(newState, v.getNewState());
+				newDiffs = question1.joinRelState(newDiffs, v.getNewDiff());
 			}
 			
-			if (!newState.equals(currNode.state)) { // if the regular state doesn't change, then the diffs don't change either
+			if (!newState.equals(currNode.state) && currNode.pointedBy.size() > 0) { // if the regular state doesn't change, then the diffs don't change either
 				controlGraph.namedVertices.get(currNode.label).state = newState;
 				controlGraph.namedVertices.get(currNode.label).relationalState = newDiffs;
 				// append all vertices pointed by our current vertex
@@ -61,7 +65,7 @@ public class Main {
 		}
 
 		for (Vertex v : controlGraph.namedVertices.values()) {
-			AssertVerifyVisitor verifier = new AssertVerifyVisitor(v.state);
+			AssertVerifyVisitor verifier = new AssertVerifyVisitor(v.state,v.relationalState);
 			for (Entry<Vertex, Command> entry : v.pointedBy.entrySet()) {
 				Command command = entry.getValue();
 				if (command instanceof AssertCmd) {

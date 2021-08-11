@@ -9,11 +9,12 @@ import ast.*;
 
 public class Question1 extends Question {
 	@Override
-	Map<String, String> applyAbstractFunction(Map<String, String> inState, Command command) {
-		ParityVisitor v = new ParityVisitor(inState);
+	ParityVisitor applyAbstractFunction(Map<String, String> inState, Map<String, Map<String, String>> inDiff,  Command command) {
+		ParityVisitor v = new ParityVisitor(inState,inDiff);
 		command.accept(v);
-		return v.getNewState();
+		return v;
 	}
+	
 
 	@Override
 	Map<String, Map<String, String>> computeRelations(Map<String, String> state) {
