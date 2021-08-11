@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="AnalysisVerification/src"/>
+	<classpathentry kind="lib" path="AnalysisVerification/tools/java-cup-11b-runtime.jar"/>
+	<classpathentry kind="lib" path="AnalysisVerification/tools/java-cup-11b.jar"/>
+	<classpathentry kind="lib" path="AnalysisVerification/tools/JFlex.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

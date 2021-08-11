@@ -1,0 +1,7 @@
+i
+L0 i := 0 L1
+L1 assume(i = 0) L2
+L1 assume(i != 0) L3
+L2 i := 2 L4
+L3 i := 4 L4
+L4 assert(EVEN i) L5

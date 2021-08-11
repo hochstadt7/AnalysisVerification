@@ -1,0 +1,4 @@
+n i j
+L0 i := 1 L1
+L1 j := i + 1 L2
+L2 assert (EVEN i ODD j) (ODD i EVEN j) L3
