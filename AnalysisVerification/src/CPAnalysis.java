@@ -7,15 +7,12 @@ import java.util.regex.Pattern;
 import java.util.Set;
 import ast.*;
 
-public class Question2 extends Question<CPVisitor,Integer> { //extends Question {
-	
-	@Override
-	CPVisitor applyAbstractFunction(Map<String, Integer> inState, Map<String, Map<String, Integer>> inSums,  Command command) {
-		CPVisitor v = new CPVisitor(inState,inSums);
+public class CPAnalysis {
+	CPVisitor applyAbstractFunction(Map<String, Integer> inState, Command command) {
+		CPVisitor v = new CPVisitor(inState);
 		command.accept(v);
 		return v;
 	}
-	
 
 	private Integer joinPointWise(Integer value1, Integer value2) { // Integer works with .equals?
 		boolean eitherIsTop = (value1.equals(CPVisitor.TOP) || value2.equals(CPVisitor.TOP));
@@ -33,7 +30,6 @@ public class Question2 extends Question<CPVisitor,Integer> { //extends Question 
 			return value2;
 	}
 	
-	@Override
 	public Map<String, Integer> join(Map<String, Integer> state1, Map<String, Integer> state2){
 		Map<String, Integer> output = new HashMap<>();
 		// join pointwise
@@ -42,26 +38,4 @@ public class Question2 extends Question<CPVisitor,Integer> { //extends Question 
 		}
 		return output;
 	}
-
-	public Map<String, Map<String, Integer>> joinRelState(Map<String, Map<String, Integer>> relState1, Map<String, Map<String, Integer>> relState2) {
-		Map<String, Map<String, Integer>> outRels = new HashMap<>();
-		Set<String> variables = relState1.keySet();
-		for (String var : variables) {
-			outRels.put(var, new HashMap<>());
-		}
-		// join sums in each map, one by one
-		for (String var1 : variables) {
-			for (String var2 : variables) {
-				if (!var1.equals(var2)) {
-					Integer diff1 = relState1.get(var1).get(var2);
-					Integer diff2 = relState2.get(var1).get(var2);
-					Integer resultDiff = joinPointWise(diff1, diff2);
-					outRels.get(var1).put(var2, resultDiff);
-					outRels.get(var2).put(var1, resultDiff);
-				}
-			}
-		}
-		return outRels;
-	}	
-
 }

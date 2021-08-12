@@ -9,7 +9,6 @@ public class CPVisitor implements Visitor {
     private final Map<String, Integer> inState;
     Map<String, Integer> newState;
     private final Map<String, Integer> allBottoms;
-    
 
     private Map<String, Integer> produceAllBottoms() {
         Map<String, Integer> bottoms = new HashMap<>();
@@ -18,7 +17,6 @@ public class CPVisitor implements Visitor {
         }
         return bottoms;
     }
-
 
     public CPVisitor(Map<String, Integer> inState) {
         this.inState = inState;
@@ -92,11 +90,9 @@ public class CPVisitor implements Visitor {
     public void visit(IntEqualityExpr intEqualityExpr) {
         String var1 = intEqualityExpr.getLv();
         Integer val = intEqualityExpr.getVal();
-        Map<String, Integer> internal = inSums.get(var1);
         if (!intEqualityExpr.isEqual()) { // i != K
             if (inState.get(var1).equals(val)) { // assuming i != K where i == K is a contradiction
                 newState = new HashMap<>(allBottoms);
-                newSums = new HashMap<>(allBottomsSums);
             }
         } else { // i = K
             Integer currAbsVal1 = inState.get(var1);
@@ -114,42 +110,26 @@ public class CPVisitor implements Visitor {
         String rv = varEqualityExpr.getRv();
         Integer prevLvVal = inState.get(lv);
         Integer prevRvVal = inState.get(rv);
-        Map<String, Integer> internal = inSums.get(lv);
         if (!varEqualityExpr.isEqual()) { // i != j
-            if (prevRvVal.equals(prevLvVal) && !prevRvVal.equals(TOP) && !prevRvVal.equals(BOTTOM)) { // contradiction // need to check also that not TOP or BOTTOM
+            if (prevRvVal.equals(prevLvVal) &&
+                    !prevRvVal.equals(TOP) &&
+                    !prevRvVal.equals(BOTTOM)
+            ) { // if i = j and they both have the same numerical value - contradiction
                 newState = new HashMap<>(allBottoms);
-                newSums = new HashMap<>(allBottomsSums);
             }
         } else { // assume i = j
             if (prevRvVal.equals(BOTTOM) || prevLvVal.equals(BOTTOM)) {
                 // equality never holds, nothing equals bottom, contradiction
                 newState = new HashMap<>(allBottoms);
-                newSums = new HashMap<>(allBottomsSums);
-            } else if (prevLvVal.equals(TOP)) { // i (top) = j => i gets j's value
-            	// rvVal can be odd, even, top. If top- no change
-            	if (!prevRvVal.equals(TOP)) {
-            		Integer newLvVal = prevRvVal;
-                    newState.put(lv, newLvVal);
-                    updateSumsConstAssign(internal, lv, newLvVal);
-                }    
-                
+            } else if ((prevLvVal.equals(TOP) && !prevRvVal.equals(TOP))) { // i (top) = j => i gets j's value
+                newState.put(lv, prevRvVal);
             }
-            else if (prevRvVal.equals(TOP)) {
-            	
-            	//lvVal can be odd, even, top. If top- no change
-            	if (!prevLvVal.equals(TOP)) {
-            		internal = inSums.get(rv);
-            		Integer newRvVal = prevLvVal;
-                    newState.put(rv, newRvVal);
-                    updateSumsConstAssign(internal, rv, newRvVal);
-                }
-            	
+            else if (prevRvVal.equals(TOP) && !prevLvVal.equals(TOP)) { // i = j (top) => j gets i's value
+                newState.put(rv, prevLvVal);
             } else if (!prevRvVal.equals(prevLvVal)) {
                 // i and j are even/odd and different - i = j is a contradiction
                 newState = new HashMap<>(allBottoms);
-                newSums = new HashMap<>(allBottomsSums);
             }
-
         }
     }
 
