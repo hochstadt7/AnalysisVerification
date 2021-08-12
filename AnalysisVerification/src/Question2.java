@@ -7,8 +7,9 @@ import java.util.regex.Pattern;
 import java.util.Set;
 import ast.*;
 
-public class Question2  { //extends Question {
-	//@Override
+public class Question2 extends Question<CPVisitor,Integer> { //extends Question {
+	
+	@Override
 	CPVisitor applyAbstractFunction(Map<String, Integer> inState, Map<String, Map<String, Integer>> inSums,  Command command) {
 		CPVisitor v = new CPVisitor(inState,inSums);
 		command.accept(v);
@@ -32,7 +33,7 @@ public class Question2  { //extends Question {
 			return value2;
 	}
 	
-	//@Override
+	@Override
 	public Map<String, Integer> join(Map<String, Integer> state1, Map<String, Integer> state2){
 		Map<String, Integer> output = new HashMap<>();
 		// join pointwise

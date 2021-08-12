@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import java.util.Set;
 import ast.*;
 
-public class Question1 extends Question {
+public class Question1 extends Question<ParityVisitor,String> {
 	@Override
 	ParityVisitor applyAbstractFunction(Map<String, String> inState, Map<String, Map<String, String>> inDiff,  Command command) {
 		ParityVisitor v = new ParityVisitor(inState,inDiff);
