@@ -17,16 +17,20 @@ public class VEVisitor implements Visitor {
     }
 
     private void explicateState() {
+        Set<VariableEquality> newVE = new HashSet<>();
         for (VariableEquality ve1 : newState) {
             for (VariableEquality ve2 : newState) {
                 if (ve1.getRv().equals(ve2.getLv())) { // a=b, b=c in state
                     VariableEquality reducedVe = new VariableEquality(ve1.getLv(), ve2.getRv()); // a=c
                     if (!newState.contains(reducedVe)) {
-                        newState.add(reducedVe);
-                        explicateState();
+                        newVE.add(reducedVe);
                     }
                 }
             }
+        }
+        if (newVE.size() > 0) {
+            newState.addAll(newVE);
+            explicateState();
         }
     }
 
