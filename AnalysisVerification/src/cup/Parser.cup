@@ -85,6 +85,7 @@ non terminal Expr Expr;
 non terminal List<List<Predicate>> ORC;
 non terminal List<Predicate> ANDC;
 non terminal Predicate Predicate;
+non terminal List<String> SumTerms;
 
 /***********************/
 /* OPERATOR PRECEDENCE */
@@ -122,6 +123,11 @@ ANDC              ::=   ANDC:predicateList Predicate:pred              {: predic
                   |     /* empty list */                               {: RESULT = new ArrayList<Predicate>(); :};
 
 Predicate         ::=   ODD ID:id                                      {: RESULT = new OddPred(id); :}
-                  |     EVEN ID:id                                     {: RESULT = new EvenPred(id); :};
+                  |     EVEN ID:id                                     {: RESULT = new EvenPred(id); :}
+                  |     SUM SumTerms:leftTerms EQUALS SUM SumTerms:rightTerms
+                                                                       {: RESULT = new SumPred(leftTerms, rightTerms); :};
+
+SumTerms          ::=   SumTerms:termList ID:id                        {: termList.add(id); RESULT = termList; :}
+                  |     /* empty list */                               {: RESULT = new ArrayList<String>(); :};
 
 

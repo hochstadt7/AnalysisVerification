@@ -132,14 +132,4 @@ public class CPVisitor implements Visitor {
             }
         }
     }
-
-    @Override
-    public void visit(EvenPred evenPred) {
-        // do nothing, never called
-    }
-
-    @Override
-    public void visit(OddPred oddPred) {
-        // do nothing, never called
-    }
 }

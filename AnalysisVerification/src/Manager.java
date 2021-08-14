@@ -1,11 +1,14 @@
 import java.io.StringReader;
 import java.util.*;
+
+import ast.CPVisitor;
 import ast.Command;
+import ast.VariableEquality;
 
 public class Manager {
 
 	// states are initialized to hold BOTTOMS as abstract value
-	public static Map<String, String> initializeState(String[] varList, String val){
+	public static Map<String, String> initializeParityState(String[] varList, String val){
 		Map<String, String> varValues = new HashMap<>();
 		for (String s : varList) {
 			varValues.put(s, val);
@@ -13,7 +16,15 @@ public class Manager {
 		return varValues;
 	}
 
-	public static Map<String, Map<String, String>> initRelationalState(String[] varList, String val) {
+	public static Map<String, Integer> initializeCPState(String[] varList, Integer val) {
+		Map<String, Integer> varValues = new HashMap<>();
+		for (String s : varList) {
+			varValues.put(s, val);
+		}
+		return varValues;
+	}
+
+	public static Map<String, Map<String, String>> initRelationalParity(String[] varList, String val) {
 		Map<String, Map<String, String>> relations = new HashMap<>();
 		for (String var : varList) {
 			Map<String, String> varRelations = new HashMap<>();
@@ -28,7 +39,7 @@ public class Manager {
 	}
 	
 	// build graph based on the input
-	public static ControlGraph buildGraph(Scanner in) {
+	public static ControlGraph buildGraph(Scanner in, String[] varList) {
 		ControlGraph controlGraph = new ControlGraph();
 		Map<String, Vertex> namedVertices = new HashMap<>();
 		List<Vertex> orderedVertices = new ArrayList<>();
@@ -64,18 +75,56 @@ public class Manager {
 		}
 		controlGraph.namedVertices = namedVertices;
 		controlGraph.start = orderedVertices.get(0);
+		controlGraph.initControlGraph(varList);
 		return controlGraph;
 	}
-	
-	public static boolean isNum(String possibleNum) {
-		try { // constant assignment
-			int isOk=Integer.parseInt(possibleNum);
-			return true;
+
+	// Updates CP factoids and VE factoids from separate fixed points to get a more detailed view
+	// given both analyses' results.
+	public static void reduceUntilFixed(Map<String, Integer> inCP, Set<VariableEquality> inVE) {
+		Map<String, Integer> newCP = new HashMap<>(inCP);
+		Set<VariableEquality> newVE = new HashSet<>(inVE);
+
+		while (true) {
+			Map<String, Integer> currCP = new HashMap<>(newCP);
+			Set<VariableEquality> currVE = new HashSet<>(newVE);
+
+			// reduce right
+			for (VariableEquality varEq : inVE) {
+				String lv = varEq.getLv();
+				String rv = varEq.getRv();
+				Integer absValLv = currCP.get(lv);
+				Integer absValRv = currCP.get(rv);
+
+				if (!absValLv.equals(CPVisitor.TOP) && !absValLv.equals(CPVisitor.BOTTOM)) { // if lv = K => rv = K
+					newCP.put(rv, absValLv);
+				}
+				if (!absValRv.equals(CPVisitor.TOP) && !absValRv.equals(CPVisitor.BOTTOM)) { // if rv = K => lv = K
+					newCP.put(lv, absValRv);
+				}
+			}
+
+			// reduce left
+			for (String lv : currCP.keySet()) {
+				for (String rv : currCP.keySet()) {
+					if (!lv.equals(rv)) {
+						Integer absValLv = currCP.get(lv);
+						Integer absValRv = currCP.get(rv);
+						if (absValLv.equals(absValRv) && !absValLv.equals(CPVisitor.TOP) &&
+								!absValLv.equals(CPVisitor.BOTTOM)) { // both vals are the same numbers
+							newVE.add(new VariableEquality(lv, rv));
+						}
+					}
+				}
+			}
+			// fixed point for both analysis
+			if (currVE.size() == newVE.size() && currVE.containsAll(newVE) &&
+					currCP.equals(newCP)) {
+				break;
+			}
 		}
-		
-		catch(NumberFormatException e){
-			return false;
-		}
+		// need to somehow return both inVE and inCP for the assertionVisitor coming later
+		inCP.clear(); inCP.putAll(newCP);
+		inVE.clear(); inVE.addAll(newVE);
 	}
-	
 }

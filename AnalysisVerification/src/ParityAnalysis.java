@@ -7,16 +7,12 @@ import java.util.regex.Pattern;
 import java.util.Set;
 import ast.*;
 
-public class Question1 extends Question<ParityVisitor,String> {
-	@Override
+public class ParityAnalysis {
 	ParityVisitor applyAbstractFunction(Map<String, String> inState, Map<String, Map<String, String>> inDiff,  Command command) {
 		ParityVisitor v = new ParityVisitor(inState,inDiff);
 		command.accept(v);
 		return v;
 	}
-	
-
-	
 
 	private String joinPointWise(String value1, String value2) {
 		boolean eitherIsTop = (value1.equals(ParityVisitor.TOP) || value2.equals(ParityVisitor.TOP));
@@ -32,8 +28,7 @@ public class Question1 extends Question<ParityVisitor,String> {
 		else
 			return ParityVisitor.EVEN;
 	}
-	
-	@Override
+
 	public Map<String, String> join(Map<String, String> state1, Map<String, String> state2){
 		Map<String, String> output = new HashMap<>();
 		// join pointwise

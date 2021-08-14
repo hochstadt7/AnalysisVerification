@@ -90,14 +90,4 @@ public class VEVisitor implements Visitor {
             }
         }
     }
-
-    @Override
-    public void visit(EvenPred evenPred) {
-        /* no change - never called */
-    }
-
-    @Override
-    public void visit(OddPred oddPred) {
-        /* no change - never called */
-    }
 }

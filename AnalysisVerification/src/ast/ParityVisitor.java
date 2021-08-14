@@ -23,7 +23,7 @@ public class ParityVisitor implements Visitor {
         }
         return bottoms;
     }
-    
+
     private Map<String, Map<String, String>> produceAllBottomsDiff() {
         Map<String, Map<String, String>> bottoms = new HashMap<>();
         for (String var : inState.keySet()) {
@@ -299,15 +299,5 @@ public class ParityVisitor implements Visitor {
                 newDiff = new HashMap<>(allBottomsDiff);
             }
         }
-    }
-
-    @Override
-    public void visit(EvenPred evenPred) {
-        // do nothing, never called
-    }
-
-    @Override
-    public void visit(OddPred oddPred) {
-        // do nothing, never called
     }
 }
