@@ -161,7 +161,8 @@ public class AssertVerifyVisitor {
         List<String> leftCopy = new ArrayList<>(leftTerms);
         List<String> rightCopy = new ArrayList<>(rightTerms);
         for (String var1 : leftTerms) {
-            for (String var2 : leftTerms) {
+            for (String var2 : rightTerms) {
+                boolean b = currVE.contains(new VariableEquality(var1, var2));
                 if (currVE.contains(new VariableEquality(var1, var2))) {
                     leftCopy.remove(var1);
                     rightCopy.remove(var2);

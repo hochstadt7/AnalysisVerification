@@ -17,7 +17,7 @@ public class Main {
 		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/ProjectExample.txt")).useDelimiter(" ");
 		varList = in.nextLine().split(" "); // first line is the variables
 		controlGraph = Manager.buildGraph(in, varList);
-		System.out.println(ParityChaoticIteration());
+		System.out.println(SummationAnalysis());
 	}
 
 	private static void removeWLDuplicates(List<Vertex> workList) {
@@ -100,7 +100,8 @@ public class Main {
 			// the new state of our current vertex is given by join of all vertices point to the vertex, after applying the corresponding abstract function
 			for (Entry<Vertex, Command> entry : currNode.pointedBy.entrySet()) {
 				VEVisitor v = VEAnalysis.applyAbstractFunction(entry.getKey().VEState, entry.getValue());
-				newVE = VEAnalysis.join(newVE, v.getNewState());
+//				newVE = VEAnalysis.join(newVE, v.getNewState());
+				newVE.addAll(v.getNewState());
 			}
 
 			if (!newVE.equals(currNode.VEState) && currNode.pointedBy.size() > 0) {

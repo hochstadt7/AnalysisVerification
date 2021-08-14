@@ -34,6 +34,6 @@ public class VariableEquality {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.lv, this.rv);
+        return Objects.hash(this.lv, this.rv) + Objects.hash(this.rv, this.lv);
     }
 }

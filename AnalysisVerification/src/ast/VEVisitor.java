@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class VEVisitor implements Visitor {
-    private Set<VariableEquality> inState;
+    private final Set<VariableEquality> inState;
     private Set<VariableEquality> newState;
 
     public VEVisitor(Set<VariableEquality> inState) {
