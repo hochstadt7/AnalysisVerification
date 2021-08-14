@@ -20,8 +20,8 @@ public class ControlGraph {
 				v.relationalParityState = Manager.initRelationalParity(varList, ParityVisitor.BOTTOM);
 			}
 			if (v.CPState == null) {
-				this.start.CPState = Manager.initializeCPState(varList, CPVisitor.BOTTOM);
-				this.start.VEState = new HashSet<>();
+				v.CPState = Manager.initializeCPState(varList, CPVisitor.BOTTOM);
+				v.VEState = new HashSet<>();
 			}
 		}
 	}

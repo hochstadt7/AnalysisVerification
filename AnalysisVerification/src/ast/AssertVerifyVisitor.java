@@ -13,22 +13,18 @@ public class AssertVerifyVisitor {
     // VE stuff
     Set<VariableEquality> currVE;
 
-    public AssertVerifyVisitor(Map<String, String> currParity, Map<String, Map<String, String>> relationalState) {
+    public AssertVerifyVisitor(
+            Map<String, String> currParity,
+            Map<String, Map<String, String>> relationalState,
+            Map<String, Integer> currCP,
+            Set<VariableEquality> currVE
+    ) {
         this.currParity = currParity;
         this.relationalParity = relationalState;
         this.countSameParity = initCombination();
         this.countDiffParity = initCombination();
-        currCP = null;
-        currVE = null;
-    }
-
-    public AssertVerifyVisitor(Map<String, Integer> currCP,  Set<VariableEquality> currVE) {
-        this.currVE = currVE;
         this.currCP = currCP;
-        currParity = null;
-        this.relationalParity = null;
-        this.countSameParity = null;
-        this.countDiffParity = null;
+        this.currVE = currVE;
     }
 
     private Map<String, Map<String, Integer>> initCombination(){

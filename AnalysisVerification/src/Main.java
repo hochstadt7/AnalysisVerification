@@ -7,15 +7,13 @@ import ast.*;
 
 public class Main {
 
-	static ParityAnalysis parityAnalysis;
-	static CPAnalysis CPAnalysis;
-	static VEAnalysis VEAnalysis;
+	static ParityAnalysis parityAnalysis = new ParityAnalysis();
+	static CPAnalysis CPAnalysis = new CPAnalysis();
+	static VEAnalysis VEAnalysis = new VEAnalysis();
 	static ControlGraph controlGraph;
 	static String[] varList;
 
 	public static void main(String[] args) throws FileNotFoundException {
-		parityAnalysis = new ParityAnalysis();
-
 		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/ProjectExample.txt")).useDelimiter(" ");
 		varList = in.nextLine().split(" "); // first line is the variables
 		controlGraph = Manager.buildGraph(in, varList);
@@ -30,7 +28,7 @@ public class Main {
 
 	private static boolean checkAssertions() {
 		for (Vertex v : controlGraph.namedVertices.values()) {
-			AssertVerifyVisitor verifier = new AssertVerifyVisitor(v.parityState, v.relationalParityState);
+			AssertVerifyVisitor verifier = new AssertVerifyVisitor(v.parityState, v.relationalParityState, v.CPState, v.VEState);
 			for (Entry<Vertex, Command> entry : v.pointedBy.entrySet()) {
 				Command command = entry.getValue();
 				if (command instanceof AssertCmd) {
