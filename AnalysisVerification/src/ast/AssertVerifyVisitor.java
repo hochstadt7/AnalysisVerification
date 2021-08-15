@@ -28,44 +28,44 @@ public class AssertVerifyVisitor {
     }
 
     private Map<String, Map<String, Integer>> initCombination(){
-    	Map<String, Map<String, Integer>> bottoms = new HashMap<>();
+        Map<String, Map<String, Integer>> bottoms = new HashMap<>();
         for (String var : currParity.keySet()) {
-        	Map<String,Integer> internal = new HashMap<>();
-        	for(String var2: currParity.keySet()) {
-        		if(!var.equals(var2)) {
-        			internal.put(var2, 0);
-        		}
-        	}
+            Map<String,Integer> internal = new HashMap<>();
+            for(String var2: currParity.keySet()) {
+                if(!var.equals(var2)) {
+                    internal.put(var2, 0);
+                }
+            }
             bottoms.put(var, internal);
         }
         return bottoms;
     }
 
-    
-    private void incrementPredicateCounter(Map<String, Map<String, Integer>> countRelation, String var1, String var2) {
-    	int count = countRelation.get(var1).get(var2);
-    	countRelation.get(var1).put(var2, count + 1);
-    	countRelation.get(var2).put(var1, count + 1); // same update- symmetric
-    }
-    
-    private void checkRelationalParity(List<Predicate> andClause) {
-    	int countOddPred = 0;
-    	String var1 = andClause.get(0).getId();
-    	String var2 = andClause.get(1).getId();
 
-    	for (Predicate pred : andClause) {
-        	if (pred instanceof OddPred) {
-        		countOddPred++;
-        	}
-    	}
+    private void incrementPredicateCounter(Map<String, Map<String, Integer>> countRelation, String var1, String var2) {
+        int count = countRelation.get(var1).get(var2);
+        countRelation.get(var1).put(var2, count + 1);
+        countRelation.get(var2).put(var1, count + 1); // same update- symmetric
+    }
+
+    private void checkRelationalParity(List<Predicate> andClause) {
+        int countOddPred = 0;
+        String var1 = andClause.get(0).getId();
+        String var2 = andClause.get(1).getId();
+
+        for (Predicate pred : andClause) {
+            if (pred instanceof OddPred) {
+                countOddPred++;
+            }
+        }
         if (countOddPred % 2 == 0) { // same parity
-        	// update counter
-        	incrementPredicateCounter(countSameParity, var1, var2);
+            // update counter
+            incrementPredicateCounter(countSameParity, var1, var2);
         } else if (countOddPred % 2 == 1) { // not same parity
-        	incrementPredicateCounter(countDiffParity, var1, var2);
+            incrementPredicateCounter(countDiffParity, var1, var2);
         }
     }
-    
+
 
     public boolean visit(AssertCmd assertCmd) {
         List<List<Predicate>> dnf = assertCmd.getDNF();
@@ -92,18 +92,18 @@ public class AssertVerifyVisitor {
             return true;
         }
         for (String var : currParity.keySet()){
-        	for (String var2 : currParity.keySet()){
-        		if (!var.equals(var2)) {
-        			if (countSameParity.get(var).get(var2) == 2) { // (EVEN var EVEN var2) (ODD var ODD var2)
-        				if (relationalParity.get(var).get(var2).equals(ParityVisitor.EVEN))
-        					return true;
-        			}
-        			if (countDiffParity.get(var).get(var2) == 2) { // (EVEN var ODD var2) (ODD var EVEN var2)
-        				if (relationalParity.get(var).get(var2).equals(ParityVisitor.ODD))
-        					return true;
-        			}
-        		}
-        	}
+            for (String var2 : currParity.keySet()){
+                if (!var.equals(var2)) {
+                    if (countSameParity.get(var).get(var2) == 2) { // (EVEN var EVEN var2) (ODD var ODD var2)
+                        if (relationalParity.get(var).get(var2).equals(ParityVisitor.EVEN))
+                            return true;
+                    }
+                    if (countDiffParity.get(var).get(var2) == 2) { // (EVEN var ODD var2) (ODD var EVEN var2)
+                        if (relationalParity.get(var).get(var2).equals(ParityVisitor.ODD))
+                            return true;
+                    }
+                }
+            }
         }
         return false;
     }
@@ -141,9 +141,7 @@ public class AssertVerifyVisitor {
     }
 
     private boolean areSumsEqual(List<String> leftTerms, List<String> rightTerms) {
-        if (leftTerms.isEmpty() && rightTerms.isEmpty()) {
-            return true;
-        }
+
         Integer leftSum = calculateVarSum(leftTerms);
         Integer rightSum = calculateVarSum(rightTerms);
         return leftSum.equals(rightSum);
@@ -162,13 +160,17 @@ public class AssertVerifyVisitor {
         List<String> rightCopy = new ArrayList<>(rightTerms);
         for (String var1 : leftTerms) {
             for (String var2 : rightTerms) {
-                boolean b = currVE.contains(new VariableEquality(var1, var2));
-                if (currVE.contains(new VariableEquality(var1, var2))) {
+                boolean sameVal = rightCopy.contains(var2) && // verify we haven't used var2 already
+                        (currVE.contains(new VariableEquality(var1, var2)) || var1.equals(var2));
+                if (sameVal) {
                     leftCopy.remove(var1);
                     rightCopy.remove(var2);
                     break;
                 }
             }
+        }
+        if (leftCopy.isEmpty() && rightCopy.isEmpty()) {
+            return true;
         }
         allTerms.clear();
         allTerms.addAll(leftCopy);

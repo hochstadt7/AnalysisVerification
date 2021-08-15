@@ -61,6 +61,11 @@ public class VEVisitor implements Visitor {
             newState.add(new VariableEquality(varAssignCmd.getLv(), varAssignCmd.getRv()));
             explicateState();
         }
+        else {
+            explicateState();
+            newState.removeIf(ve -> ve.involvesVar(varAssignCmd.getLv()));
+            explicateState();
+        }
     }
 
     @Override
