@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="tools">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/AnalysisVerification/tools/JFlex.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AnalysisVerification/tools/java-cup-11b-runtime.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AnalysisVerification/tools/java-cup-11b.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
