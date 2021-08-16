@@ -10,7 +10,7 @@ public class CPVisitor implements Visitor {
     Map<String, Integer> newState;
     private final Map<String, Integer> allBottoms;
 
-    private Map<String, Integer> produceAllBottoms() {
+    public Map<String, Integer> produceAllBottoms() {
         Map<String, Integer> bottoms = new HashMap<>();
         for (String var : inState.keySet()) {
             bottoms.put(var, BOTTOM);

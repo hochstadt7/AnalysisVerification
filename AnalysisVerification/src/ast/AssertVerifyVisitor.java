@@ -49,15 +49,23 @@ public class AssertVerifyVisitor {
     }
 
     private void checkRelationalParity(List<Predicate> andClause) {
+        int numOfParityPredicates = 0;
         int countOddPred = 0;
-        String var1 = andClause.get(0).getId();
-        String var2 = andClause.get(1).getId();
+        Predicate[] indexesOfPairtyPredicates  = new Predicate[2];
+        //String var1 = andClause.get(0).getId();
+        //String var2 = andClause.get(1).getId();
 
         for (Predicate pred : andClause) {
-            if (pred instanceof OddPred) {
-                countOddPred++;
+            if (pred instanceof OddPred || pred instanceof EvenPred) {
+                if (pred instanceof OddPred){countOddPred++;}
+                indexesOfPairtyPredicates[numOfParityPredicates] = pred;
+                numOfParityPredicates++;
             }
         }
+        if (numOfParityPredicates != 2) // less than 2 parity predicates- no additional info
+            return;
+        String var1 = indexesOfPairtyPredicates[0].getId();
+        String var2 = indexesOfPairtyPredicates[1].getId();
         if (countOddPred % 2 == 0) { // same parity
             // update counter
             incrementPredicateCounter(countSameParity, var1, var2);
@@ -73,14 +81,15 @@ public class AssertVerifyVisitor {
         boolean anyTrue = false;
         for (List<Predicate> andClause : dnf) {
             boolean anyFalse = false;
-            int numOfPredicates = andClause.size();
-            if (numOfPredicates == 2) {
-                checkRelationalParity(andClause);
+            //int numOfPredicates = andClause.size();
+            if (andClause.size() >= 2) {
+            checkRelationalParity(andClause);
             }
 
             for (Predicate pred : andClause) {
                 if (!pred.acceptVerifier(this)) {
                     anyFalse = true;
+                    break;
                 }
             }
             if (!anyFalse) { // and clause holds
@@ -91,6 +100,7 @@ public class AssertVerifyVisitor {
         if (anyTrue) {
             return true;
         }
+        // out backup for parity- the diffs
         for (String var : currParity.keySet()){
             for (String var2 : currParity.keySet()){
                 if (!var.equals(var2)) {

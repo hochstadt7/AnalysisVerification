@@ -23,8 +23,7 @@ public class ParityVisitor implements Visitor {
         }
         return bottoms;
     }
-
-    private Map<String, Map<String, String>> produceAllBottomsDiff() {
+    public Map<String, Map<String, String>> produceAllBottomsDiff() {
         Map<String, Map<String, String>> bottoms = new HashMap<>();
         for (String var : inState.keySet()) {
             Map<String,String> internal = new HashMap<>();
