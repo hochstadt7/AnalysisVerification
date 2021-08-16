@@ -1,11 +1,18 @@
 import java.io.StringReader;
 import java.util.*;
 
-import ast.CPVisitor;
-import ast.Command;
-import ast.VariableEquality;
+import ast.*;
 
 public class Manager {
+
+	public static Map<String, CartesianProduct> initializeCartesianState(String[] varList, CartesianProduct val){
+		Map<String, CartesianProduct> varValues = new HashMap<>();
+		for (String var : varList){
+			varValues.put(var, val);
+		}
+
+		return varValues;
+	}
 
 	// states are initialized to hold BOTTOMS as abstract value
 	public static Map<String, String> initializeParityState(String[] varList, String val){

@@ -11,13 +11,13 @@ import ast.VariableEquality;
 
 public class CartesianAnalysis {
 
-    CartesianVisitor applyAbstractFunction(Map<String, CartesianProduct> inState, Command command) {
+    public CartesianVisitor applyAbstractFunction(Map<String, CartesianProduct> inState, Command command) {
         CartesianVisitor v = new CartesianVisitor(inState);
         command.accept(v);
         return v;
     }
 
-    private CartesianProduct joinPointWise(CartesianProduct value1, CartesianProduct value2) {
+    public static CartesianProduct joinPointWise(CartesianProduct value1, CartesianProduct value2) {
 
         Map<String, String> joinParity = ParityAnalysis.join(value1.getInStateParity(), value2.getInStateParity());
         Map<String, Map<String, String>> joinDiff = ParityAnalysis.joinRelState(value1.getInDiffParity(), value2.getInDiffParity());
@@ -27,7 +27,8 @@ public class CartesianAnalysis {
         return new CartesianProduct(joinParity, joinDiff, joinVE, joinCP);
     }
 
-    public Map<String, CartesianProduct> join(Map<String, CartesianProduct> state1, Map<String, CartesianProduct> state2){
+
+    public static Map<String, CartesianProduct> join(Map<String, CartesianProduct> state1, Map<String, CartesianProduct> state2){
         Map<String, CartesianProduct> output = new HashMap<>();
         // join pointwise
         for (String varName : state1.keySet()) {

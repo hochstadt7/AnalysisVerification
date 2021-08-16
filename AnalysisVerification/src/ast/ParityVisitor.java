@@ -116,7 +116,7 @@ public class ParityVisitor implements Visitor {
                     updateNewDiff(lv, var2, inState.get(rv).equals(BOTTOM)? BOTTOM : EVEN); // even if n is Bottom???
                 }
                 else {
-                    // update by prev_gap
+                    // possible update using prev_gap info
                     String prev_gap = inDiff.get(rv).get(var2);
                     if (prev_gap.equals(EVEN) || prev_gap.equals(ODD)){
                         updateNewDiff(lv, var2, prev_gap.equals(EVEN) ? EVEN : ODD);
@@ -158,6 +158,7 @@ public class ParityVisitor implements Visitor {
                     updateNewDiff(lv, var2, inState.get(rv).equals(BOTTOM)? BOTTOM : ODD); // odd if var2.absVal is BOTTOM????
                 }
                 else {
+                    // possible update using prev_gap info
                     String prev_gap = inDiff.get(rv).get(var2);
                     if (prev_gap.equals(EVEN) || prev_gap.equals(ODD)){
                         updateNewDiff(lv, var2, prev_gap.equals(EVEN) ? ODD : EVEN);
@@ -277,7 +278,7 @@ public class ParityVisitor implements Visitor {
                         updateNewDiff(lv, var2, EVEN);
                         continue;
                     }
-                    // update by prev_gap
+                    // possible update using prev_gap info
                     String prev_gap = inDiff.get(rv).get(var2);
                     if (prev_gap.equals(EVEN) || prev_gap.equals(ODD)){
                         updateNewDiff(lv, var2, prev_gap.equals(EVEN) ? EVEN : ODD);
@@ -309,7 +310,7 @@ public class ParityVisitor implements Visitor {
                 newState.put(rv, newRvVal);
                 for (String var2 : internal.keySet()) {
 
-                    if (var2.equals(rv)){
+                    if (var2.equals(lv)){
                         updateNewDiff(rv, var2, EVEN);
                         continue;
                     }

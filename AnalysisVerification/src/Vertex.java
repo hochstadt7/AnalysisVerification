@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ast.CartesianProduct;
 import ast.Command;
 import ast.VariableEquality;
 
@@ -15,6 +16,7 @@ public class Vertex {
 	Map<String, Map<String, String>> relationalParityState;
 	Set<VariableEquality> VEState;
 	Map<String, Integer> CPState;
+	Map<String, CartesianProduct> cartesianState;
 
 	public Vertex(String label) {
 		pointedBy = new HashMap<>();
@@ -25,5 +27,6 @@ public class Vertex {
 		this.relationalParityState = null;
 		this.VEState = null;
 		this.CPState = null;
+		this.cartesianState = null;
 	}
 }

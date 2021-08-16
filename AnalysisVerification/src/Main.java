@@ -10,14 +10,17 @@ public class Main {
 	static ParityAnalysis parityAnalysis = new ParityAnalysis();
 	static CPAnalysis CPAnalysis = new CPAnalysis();
 	static VEAnalysis VEAnalysis = new VEAnalysis();
+	static CartesianAnalysis cartesianAnalysis = new CartesianAnalysis();
 	static ControlGraph controlGraph;
 	static String[] varList;
 
 	public static void main(String[] args) throws FileNotFoundException {
-		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/EvenAnyway.txt")).useDelimiter(" ");
+		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/Sum/True.txt")).useDelimiter(" ");
 		varList = in.nextLine().split(" "); // first line is the variables
 		controlGraph = Manager.buildGraph(in, varList);
-		System.out.println(ParityChaoticIteration());
+		//CartesianChaoticIteration();
+		System.out.println(SummationAnalysis());
+		System.out.println("finish");
 	}
 
 	private static void removeWLDuplicates(List<Vertex> workList) {
@@ -106,6 +109,30 @@ public class Main {
 
 			if (!newVE.equals(currNode.VEState) && currNode.pointedBy.size() > 0) {
 				controlGraph.namedVertices.get(currNode.label).VEState = newVE;
+				// append all vertices pointed by our current vertex
+				workList.addAll(currNode.pointsTo);
+			}
+			removeWLDuplicates(workList);
+		}
+	}
+
+	public static void CartesianChaoticIteration() {
+		List<Vertex> workList = new ArrayList<>(controlGraph.namedVertices.values());
+		Set<String> setVars = new HashSet<>();
+		setVars.addAll(Arrays.asList(varList)); // convert array to set
+
+		while (!workList.isEmpty()) {
+			Vertex currNode = workList.remove(0);
+			Map<String, CartesianProduct> newCartesian = Manager.initializeCartesianState(varList, CartesianVisitor.bottomProduct(setVars));
+
+			// the new state of our current vertex is given by join of all vertices point to the vertex, after applying the corresponding abstract function
+			for (Entry<Vertex, Command> entry : currNode.pointedBy.entrySet()) {
+				CartesianVisitor v = cartesianAnalysis.applyAbstractFunction(entry.getKey().cartesianState, entry.getValue());
+				newCartesian = CartesianAnalysis.join(newCartesian, v.getNewState());
+			}
+
+			if (!newCartesian.equals(currNode.cartesianState) && currNode.pointedBy.size() > 0) {
+				controlGraph.namedVertices.get(currNode.label).cartesianState = newCartesian;
 				// append all vertices pointed by our current vertex
 				workList.addAll(currNode.pointsTo);
 			}
