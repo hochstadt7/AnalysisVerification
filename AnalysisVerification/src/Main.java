@@ -14,10 +14,10 @@ public class Main {
 	static String[] varList;
 
 	public static void main(String[] args) throws FileNotFoundException {
-		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/ProjectExample.txt")).useDelimiter(" ");
+		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/EvenAnyway.txt")).useDelimiter(" ");
 		varList = in.nextLine().split(" "); // first line is the variables
 		controlGraph = Manager.buildGraph(in, varList);
-		System.out.println(SummationAnalysis());
+		System.out.println(ParityChaoticIteration());
 	}
 
 	private static void removeWLDuplicates(List<Vertex> workList) {

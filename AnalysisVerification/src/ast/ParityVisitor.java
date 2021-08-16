@@ -27,12 +27,12 @@ public class ParityVisitor implements Visitor {
     private Map<String, Map<String, String>> produceAllBottomsDiff() {
         Map<String, Map<String, String>> bottoms = new HashMap<>();
         for (String var : inState.keySet()) {
-        	Map<String,String> internal=new HashMap<>();
-        	for(String var2 : inState.keySet()) {
-        		if(!var.equals(var2)) {
-        			internal.put(var2, BOTTOM);
-        		}
-        	}
+            Map<String,String> internal = new HashMap<>();
+            for(String var2 : inState.keySet()) {
+                if(!var.equals(var2)) {
+                    internal.put(var2, BOTTOM);
+                }
+            }
             bottoms.put(var, internal);
         }
         return bottoms;
@@ -55,7 +55,7 @@ public class ParityVisitor implements Visitor {
     public Map<String, String> getNewState() {
         return newState;
     }
-    
+
     public Map<String, Map<String, String>> getNewDiff() {
         return newDiff;
     }
@@ -72,21 +72,21 @@ public class ParityVisitor implements Visitor {
 
     @Override
     public void visit(IntAssignCmd intAssignCmd) {
-    	Map<String,String> internal = inDiff.get(intAssignCmd.getLv());
+        Map<String,String> internal = inDiff.get(intAssignCmd.getLv());
         String var1 = intAssignCmd.getLv();
 
         if (intAssignCmd.isAnyNum()) { // i = ?
             newState.put(var1, TOP);
             for (String var2 : internal.keySet()) {
                 // if lv -> top, then lv-var -> top <=> var !-> bottom
-            	updateNewDiff(var1, var2, inState.get(var2).equals(BOTTOM) ? BOTTOM : TOP);
+                updateNewDiff(var1, var2, inState.get(var2).equals(BOTTOM) ? BOTTOM : TOP);
             }
         } else { // i = K
             String newAbsVal1 = intAssignCmd.getVal() % 2 == 0 ? EVEN : ODD;
             newState.put(var1, newAbsVal1);
 
             for (String var2 : internal.keySet()) {
-            	String currAbsVal2 = inState.get(var2);
+                String currAbsVal2 = inState.get(var2);
                 switch (currAbsVal2) {
                     case EVEN ->
                             updateNewDiff(var1, var2, newAbsVal1.equals(EVEN) ? EVEN : ODD);
@@ -101,67 +101,80 @@ public class ParityVisitor implements Visitor {
 
     @Override
     public void visit(VarAssignCmd varAssignCmd) {
-        String var1 = varAssignCmd.getLv();
-    	Map<String, String> internal = inDiff.get(var1);
-        String newAbsVal1 = inState.get(varAssignCmd.getRv());
+        String lv = varAssignCmd.getLv();
+        String rv = varAssignCmd.getRv();
+        Map<String, String> internal = inDiff.get(lv);
+        String newAbsVal1 = inState.get(rv);
         if (varAssignCmd.getType() == VarAssignCmd.AssignType.SIMPLE) { // i = j
-             newState.put(var1, newAbsVal1);
-             for (String var2 : internal.keySet()) {
-                 String currAbsVal2 = inState.get(var2);
-            	 if (var2.equals(varAssignCmd.getRv())) {
-            		 // i = n makes n - i = EVEN
-            		 updateNewDiff(var1, var2, EVEN);
-            	 }
-            	 else {
-            		boolean bothEvenOrOdd = (newAbsVal1.equals(EVEN) || newAbsVal1.equals(ODD)) &&
+            newState.put(lv, newAbsVal1);
+            for (String var2 : internal.keySet()) {
+
+                String currAbsVal2 = inState.get(var2);
+                if (var2.equals(rv)) {
+                    // i = n makes n - i = EVEN
+                    updateNewDiff(lv, var2, inState.get(rv).equals(BOTTOM)? BOTTOM : EVEN); // even if n is Bottom???
+                }
+                else {
+                    // update by prev_gap
+                    String prev_gap = inDiff.get(rv).get(var2);
+                    if (prev_gap.equals(EVEN) || prev_gap.equals(ODD)){
+                        updateNewDiff(lv, var2, prev_gap.equals(EVEN) ? EVEN : ODD);
+                        continue;
+                    }
+
+                    boolean bothEvenOrOdd = (newAbsVal1.equals(EVEN) || newAbsVal1.equals(ODD)) &&
                             (currAbsVal2.equals(EVEN) || currAbsVal2.equals(ODD));
-            		if (bothEvenOrOdd) {
-            		    if (newAbsVal1.equals(currAbsVal2)) {
-            		        updateNewDiff(var1, var2, EVEN);
+                    if (bothEvenOrOdd) {
+                        if (newAbsVal1.equals(currAbsVal2)) {
+                            updateNewDiff(lv, var2, EVEN);
                         } else {
-                            updateNewDiff(var1, var2, ODD);
+                            updateNewDiff(lv, var2, ODD);
                         }
                     } else {
-                        updateNewDiff(var1, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
-                    }
-            	 }
-             }
-             
-         } else { // increment / decrement
-            switch (inState.get(varAssignCmd.getRv())) {
-                case TOP -> {
-                    newState.put(var1, TOP);
-                    for (String var2 : internal.keySet()) {
-                        // everything involves BOTTOM is BOTTOM. The others relations become TOP.
-                        updateNewDiff(var1, var2, inState.get(var2).equals(BOTTOM) ? BOTTOM : TOP);
-                    }
-                }
-                case BOTTOM -> {
-                    newState.put(var1, BOTTOM);
-                    for (String var2 : internal.keySet()) {
-                        // involves BOTTOM, so all are BOTTOMS
-                        updateNewDiff(var1, var2, BOTTOM);
-                    }
-                }
-                case EVEN, ODD -> {
-                    newState.put(var1, ODD);
-                    for (String var2 : internal.keySet()) {
-                        if (var2.equals(varAssignCmd.getRv())) {
-                            // i = n + 1 makes n - i = 1 = ODD
-                            updateNewDiff(var1, var2, ODD);
-                        } else {
-                            if (inDiff.get(var2).get(var1).equals(ODD)) {
-                                // flipped diff parity
-                                updateNewDiff(var1, var2, EVEN);
-                            } else if (inDiff.get(var2).get(var1).equals(EVEN)) {
-                                // flipped diff parity
-                                updateNewDiff(var1, var2, ODD);
-                            }
-                        }
+                        if (currAbsVal2.equals(BOTTOM) || newAbsVal1.equals(BOTTOM))
+                            updateNewDiff(lv, var2, BOTTOM);
+                        else
+                            updateNewDiff(lv, var2, TOP);
                     }
                 }
             }
-         }
+
+        } else { // increment / decrement // need to set i - j = odd!
+            switch (inState.get(rv)) {
+                case EVEN -> newState.put(lv, ODD);
+                case ODD -> newState.put(lv, EVEN);
+                default -> newState.put(lv, inState.get(rv));
+            }
+            for (String var2 : internal.keySet()) {
+                String currAbsVal2 = inState.get(var2);
+                if (var2.equals(rv)) {
+                    // i = n + 1 makes n - i = ODD
+                    updateNewDiff(lv, var2, inState.get(rv).equals(BOTTOM)? BOTTOM : ODD); // odd if var2.absVal is BOTTOM????
+                }
+                else {
+                    String prev_gap = inDiff.get(rv).get(var2);
+                    if (prev_gap.equals(EVEN) || prev_gap.equals(ODD)){
+                        updateNewDiff(lv, var2, prev_gap.equals(EVEN) ? ODD : EVEN);
+                        continue;
+                    }
+
+                    boolean bothEvenOrOdd = (newAbsVal1.equals(EVEN) || newAbsVal1.equals(ODD)) &&
+                            (currAbsVal2.equals(EVEN) || currAbsVal2.equals(ODD));
+                    if (bothEvenOrOdd) {
+                        if (newAbsVal1.equals(currAbsVal2)) {
+                            updateNewDiff(lv, var2, ODD);
+                        } else {
+                            updateNewDiff(lv, var2, EVEN);
+                        }
+                    } else {
+                        if (currAbsVal2.equals(BOTTOM) || newAbsVal1.equals(BOTTOM))
+                            updateNewDiff(lv, var2, BOTTOM);
+                        else
+                            updateNewDiff(lv, var2, TOP);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -195,6 +208,7 @@ public class ParityVisitor implements Visitor {
                     break;
                 // if i was top then the assumption i = K adds information about i's parity - it now equals K's parity
                 case TOP:
+
                     String newAbsVal1 = intEqualityExpr.getVal() % 2 == 0 ? EVEN : ODD;
                     newState.put(var1, newAbsVal1);
                     for (String var2 : internal.keySet()) {
@@ -204,8 +218,6 @@ public class ParityVisitor implements Visitor {
                                     updateNewDiff(var1, var2, newAbsVal1.equals(EVEN) ? EVEN : ODD);
                             case ODD ->
                                     updateNewDiff(var1, var2, newAbsVal1.equals(ODD) ? EVEN : ODD);
-                            default -> // var2 -> bot, top: case has no effect, appears for completeness
-                                    updateNewDiff(var1, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
                         }
                     }
                     break;
@@ -228,8 +240,9 @@ public class ParityVisitor implements Visitor {
 
     @Override
     public void visit(VarEqualityExpr varEqualityExpr) {
-        String var1 = varEqualityExpr.getLv();
-        Map<String, String> internal = inDiff.get(var1);
+        String lv = varEqualityExpr.getLv();
+        String rv = varEqualityExpr.getRv();
+        Map<String, String> internal = inDiff.get(lv);
         // Inequality case conclusion:
         // if either vars is bottom then inequality always holds and no change
         // if either vars is top then the inequality holding does not add any information about i -
@@ -240,42 +253,64 @@ public class ParityVisitor implements Visitor {
 
         // Equality case
         if (varEqualityExpr.isEqual()) { // i = j
-            String prevLvVal = inState.get(var1);
-            String prevRvVal = inState.get(varEqualityExpr.getRv());
+            String prevLvVal = inState.get(lv);
+            String prevRvVal = inState.get(rv);
             if (prevRvVal.equals(BOTTOM) || prevLvVal.equals(BOTTOM)) {
                 // equality never holds, nothing equals bottom, contradiction
                 newState = new HashMap<>(allBottoms);
                 newDiff = new HashMap<>(allBottomsDiff);
             } else if (prevLvVal.equals(TOP)) { // i (top) = j => i gets j's parity
                 String newLvVal = prevRvVal;
-                newState.put(var1, newLvVal);
+                newState.put(lv, newLvVal);
                 // rvVal can be odd, even, top
                 for (String var2 : internal.keySet()) {
+
+                    if (var2.equals(rv)){
+                        updateNewDiff(lv, var2, EVEN);
+                        continue;
+                    }
+                    // update by prev_gap
+                    String prev_gap = inDiff.get(rv).get(var2);
+                    if (prev_gap.equals(EVEN) || prev_gap.equals(ODD)){
+                        updateNewDiff(lv, var2, prev_gap.equals(EVEN) ? EVEN : ODD);
+                        continue;
+                    }
+
                     String currAbsVal2 = inState.get(var2);
                     switch (newLvVal) {
                         // prevLvVal = newLvVal = top => no change
                         case EVEN:
                             if (currAbsVal2.equals(EVEN) || currAbsVal2.equals(ODD)) {
-                                updateNewDiff(var1, var2, currAbsVal2.equals(EVEN) ? EVEN : ODD);
+                                updateNewDiff(lv, var2, currAbsVal2.equals(EVEN) ? EVEN : ODD);
                             } else {
-                                updateNewDiff(var1, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
+                                updateNewDiff(lv, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
                             }
                         case ODD:
                             if (currAbsVal2.equals(EVEN) || currAbsVal2.equals(ODD)) {
-                                updateNewDiff(var1, var2, currAbsVal2.equals(ODD) ? EVEN : ODD);
+                                updateNewDiff(lv, var2, currAbsVal2.equals(ODD) ? EVEN : ODD);
                             } else {
-                                updateNewDiff(var1, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
+                                updateNewDiff(lv, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
                             }
+
                     }
                 }
             } else if (prevRvVal.equals(TOP)) {  // i = j (top) => j gets i's parity
                 String newRvVal = prevLvVal;
-                String rv = varEqualityExpr.getRv();
-                
                 internal = inDiff.get(rv);
-                
+
                 newState.put(rv, newRvVal);
                 for (String var2 : internal.keySet()) {
+
+                    if (var2.equals(rv)){
+                        updateNewDiff(rv, var2, EVEN);
+                        continue;
+                    }
+                    String prev_gap = inDiff.get(lv).get(var2);
+                    if (prev_gap.equals(EVEN) || prev_gap.equals(ODD)) {
+                        updateNewDiff(rv, var2, prev_gap.equals(EVEN) ? EVEN : ODD);
+                        continue;
+                    }
+
                     String currAbsVal2 = inState.get(var2);
                     switch (newRvVal) {
                         // prevLvVal = newLvVal = top => no change
@@ -291,6 +326,7 @@ public class ParityVisitor implements Visitor {
                             } else {
                                 updateNewDiff(rv, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
                             }
+
                     }
                 }
             } else if (!prevRvVal.equals(prevLvVal)) {
