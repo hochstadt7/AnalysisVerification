@@ -15,7 +15,7 @@ public class CPAnalysis {
 		return v;
 	}
 
-	private Integer joinPointWise(Integer value1, Integer value2) { // Integer works with .equals?
+	public static Integer joinPointWise(Integer value1, Integer value2) { // Integer works with .equals?
 		boolean eitherIsTop = (value1.equals(CPVisitor.TOP) || value2.equals(CPVisitor.TOP));
 		boolean bothBottom = (value1.equals(CPVisitor.BOTTOM) && value2.equals(CPVisitor.BOTTOM));
 		boolean notSameActualVal = (!value1.equals(CPVisitor.TOP) && !value1.equals(CPVisitor.BOTTOM)
@@ -31,7 +31,7 @@ public class CPAnalysis {
 			return value2;
 	}
 	
-	public Map<String, Integer> join(Map<String, Integer> state1, Map<String, Integer> state2){
+	public static Map<String, Integer> join(Map<String, Integer> state1, Map<String, Integer> state2){
 		Map<String, Integer> output = new HashMap<>();
 		// join pointwise
 		for (String varName : state1.keySet()) {

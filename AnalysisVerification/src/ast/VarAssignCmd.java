@@ -23,9 +23,15 @@ public class VarAssignCmd extends Command {
         this.lv = lv;
         this.rv = rv;
         switch (add) {
-            case 1 -> this.type = AssignType.INCREMENT;
-            case 0 -> this.type = AssignType.SIMPLE;
-            case -1 -> this.type = AssignType.DECREMENT;
+            case 1:
+                this.type = AssignType.INCREMENT;
+                break;
+            case 0:
+                this.type = AssignType.SIMPLE;
+                break;
+            case -1:
+                this.type = AssignType.DECREMENT;
+                break;
         }
     }
 

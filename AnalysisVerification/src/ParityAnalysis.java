@@ -14,7 +14,7 @@ public class ParityAnalysis {
 		return v;
 	}
 
-	private String joinPointWise(String value1, String value2) {
+	public static String joinPointWise(String value1, String value2) {
 		boolean eitherIsTop = (value1.equals(ParityVisitor.TOP) || value2.equals(ParityVisitor.TOP));
 		boolean bothBottom = (value1.equals(ParityVisitor.BOTTOM) && value2.equals(ParityVisitor.BOTTOM));
 		boolean areOpposite = (value1.equals(ParityVisitor.EVEN) && value2.equals(ParityVisitor.ODD))
@@ -29,7 +29,7 @@ public class ParityAnalysis {
 			return ParityVisitor.EVEN;
 	}
 
-	public Map<String, String> join(Map<String, String> state1, Map<String, String> state2){
+	public static Map<String, String> join(Map<String, String> state1, Map<String, String> state2){
 		Map<String, String> output = new HashMap<>();
 		// join pointwise
 		for (String varName : state1.keySet()) {
@@ -38,7 +38,7 @@ public class ParityAnalysis {
 		return output;
 	}
 
-	public Map<String, Map<String, String>> joinRelState(Map<String, Map<String, String>> relState1, Map<String, Map<String, String>> relState2) {
+	public static Map<String, Map<String, String>> joinRelState(Map<String, Map<String, String>> relState1, Map<String, Map<String, String>> relState2) {
 		Map<String, Map<String, String>> outRels = new HashMap<>();
 		Set<String> variables = relState1.keySet();
 		for (String var : variables) {

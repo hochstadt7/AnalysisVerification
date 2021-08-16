@@ -12,7 +12,7 @@ public class VEAnalysis {
         return v;
     }
 
-    public Set<VariableEquality> join(Set<VariableEquality> state1, Set<VariableEquality> state2) {
+    public static Set<VariableEquality> join(Set<VariableEquality> state1, Set<VariableEquality> state2) {
         Set<VariableEquality> output = new HashSet<>();
         for (VariableEquality ve : state1) {
             if (state2.contains(ve)) {

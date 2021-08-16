@@ -16,7 +16,7 @@ public class ParityVisitor implements Visitor {
     private final Map<String, String> allBottoms;
     private final Map<String, Map<String, String>> allBottomsDiff;
 
-    private Map<String, String> produceAllBottoms() {
+    public Map<String, String> produceAllBottoms() {
         Map<String, String> bottoms = new HashMap<>();
         for (String var : inState.keySet()) {
             bottoms.put(var, BOTTOM);
@@ -87,11 +87,13 @@ public class ParityVisitor implements Visitor {
             for (String var2 : internal.keySet()) {
                 String currAbsVal2 = inState.get(var2);
                 switch (currAbsVal2) {
-                    case EVEN ->
+                    case EVEN:
                             updateNewDiff(var1, var2, newAbsVal1.equals(EVEN) ? EVEN : ODD);
-                    case ODD ->
+                            break;
+                    case ODD:
                             updateNewDiff(var1, var2, newAbsVal1.equals(ODD) ? EVEN : ODD);
-                    default -> // var2 -> bot, top
+                            break;
+                    default: // var2 -> bot, top
                             updateNewDiff(var1, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
                 }
             }
@@ -140,9 +142,14 @@ public class ParityVisitor implements Visitor {
 
         } else { // increment / decrement // need to set i - j = odd!
             switch (inState.get(rv)) {
-                case EVEN -> newState.put(lv, ODD);
-                case ODD -> newState.put(lv, EVEN);
-                default -> newState.put(lv, inState.get(rv));
+                case EVEN:
+                    newState.put(lv, ODD);
+                    break;
+                case ODD:
+                    newState.put(lv, EVEN);
+                    break;
+                default:
+                    newState.put(lv, inState.get(rv));
             }
             for (String var2 : internal.keySet()) {
                 String currAbsVal2 = inState.get(var2);
@@ -213,10 +220,12 @@ public class ParityVisitor implements Visitor {
                     for (String var2 : internal.keySet()) {
                         String currAbsVal2 = inState.get(var2);
                         switch (currAbsVal2) {
-                            case EVEN ->
+                            case EVEN:
                                     updateNewDiff(var1, var2, newAbsVal1.equals(EVEN) ? EVEN : ODD);
-                            case ODD ->
+                                    break;
+                            case ODD:
                                     updateNewDiff(var1, var2, newAbsVal1.equals(ODD) ? EVEN : ODD);
+                                    break;
                         }
                     }
                     break;

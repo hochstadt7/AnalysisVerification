@@ -56,6 +56,19 @@ public class CartesianVisitor implements Visitor {
         }
     }
 
+    public void updateNewStateExpr(Expr command){
+        for (String var : inState.keySet()){
+            CartesianProduct currCartesianProduct = inState.get(var);
+            ParityVisitor v = new ParityVisitor(currCartesianProduct.getInStateParity(),currCartesianProduct.getInDiffParity());
+            command.accept(v);
+            CPVisitor cpVisitor = new CPVisitor(currCartesianProduct.getInStateCP());
+            command.accept(v);
+            VEVisitor veVisitor= new VEVisitor(currCartesianProduct.getInStateVE());
+            command.accept(veVisitor);
+            newState.put(var, new CartesianProduct(v.getNewState(), v.getNewDiff(), veVisitor.getNewState(), cpVisitor.getNewState()));
+        }
+    }
+
     @Override
     public void visit(IntAssignCmd intAssignCmd) {
         updateNewState(intAssignCmd);
@@ -83,11 +96,11 @@ public class CartesianVisitor implements Visitor {
 
     @Override
     public void visit(IntEqualityExpr intEqualityExpr) {
-        updateNewState(intEqualityExpr);
+        updateNewStateExpr(intEqualityExpr);
     }
 
     @Override
     public void visit(VarEqualityExpr varEqualityExpr) {
-        updateNewState(varEqualityExpr);
+        updateNewStateExpr(varEqualityExpr);
     }
 }
