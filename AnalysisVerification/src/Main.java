@@ -15,7 +15,7 @@ public class Main {
 	static String[] varList;
 
 	public static void main(String[] args) throws FileNotFoundException {
-		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/Sum/True.txt")).useDelimiter(" ");
+		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/Sum/TwoForOne.txt")).useDelimiter(" ");
 		varList = in.nextLine().split(" "); // first line is the variables
 		controlGraph = Manager.buildGraph(in, varList);
 		//CartesianChaoticIteration();
@@ -31,10 +31,12 @@ public class Main {
 
 	private static boolean checkAssertions() {
 		for (Vertex v : controlGraph.namedVertices.values()) {
-			AssertVerifyVisitor verifier = new AssertVerifyVisitor(v.parityState, v.relationalParityState, v.CPState, v.VEState);
 			for (Entry<Vertex, Command> entry : v.pointedBy.entrySet()) {
 				Command command = entry.getValue();
 				if (command instanceof AssertCmd) {
+					Vertex vertexToCheck = entry.getKey();
+					AssertVerifyVisitor verifier = new AssertVerifyVisitor(vertexToCheck.parityState, vertexToCheck.relationalParityState,
+							vertexToCheck.CPState, vertexToCheck.VEState);
 					boolean isOk = ((AssertCmd) command).acceptVerifier(verifier);
 					if (!isOk) {
 						return false;

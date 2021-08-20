@@ -88,13 +88,13 @@ public class ParityVisitor implements Visitor {
                 String currAbsVal2 = inState.get(var2);
                 switch (currAbsVal2) {
                     case EVEN:
-                            updateNewDiff(var1, var2, newAbsVal1.equals(EVEN) ? EVEN : ODD);
-                            break;
+                        updateNewDiff(var1, var2, newAbsVal1.equals(EVEN) ? EVEN : ODD);
+                        break;
                     case ODD:
-                            updateNewDiff(var1, var2, newAbsVal1.equals(ODD) ? EVEN : ODD);
-                            break;
+                        updateNewDiff(var1, var2, newAbsVal1.equals(ODD) ? EVEN : ODD);
+                        break;
                     default: // var2 -> bot, top
-                            updateNewDiff(var1, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
+                        updateNewDiff(var1, var2, currAbsVal2.equals(BOTTOM) ? BOTTOM : TOP);
                 }
             }
         }
@@ -222,11 +222,11 @@ public class ParityVisitor implements Visitor {
                         String currAbsVal2 = inState.get(var2);
                         switch (currAbsVal2) {
                             case EVEN:
-                                    updateNewDiff(var1, var2, newAbsVal1.equals(EVEN) ? EVEN : ODD);
-                                    break;
+                                updateNewDiff(var1, var2, newAbsVal1.equals(EVEN) ? EVEN : ODD);
+                                break;
                             case ODD:
-                                    updateNewDiff(var1, var2, newAbsVal1.equals(ODD) ? EVEN : ODD);
-                                    break;
+                                updateNewDiff(var1, var2, newAbsVal1.equals(ODD) ? EVEN : ODD);
+                                break;
                         }
                     }
                     break;

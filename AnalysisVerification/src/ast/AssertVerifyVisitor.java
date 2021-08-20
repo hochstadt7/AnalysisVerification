@@ -66,11 +66,13 @@ public class AssertVerifyVisitor {
             return;
         String var1 = indexesOfPairtyPredicates[0].getId();
         String var2 = indexesOfPairtyPredicates[1].getId();
-        if (countOddPred % 2 == 0) { // same parity
-            // update counter
-            incrementPredicateCounter(countSameParity, var1, var2);
-        } else if (countOddPred % 2 == 1) { // not same parity
-            incrementPredicateCounter(countDiffParity, var1, var2);
+        if (!var1.equals(var2)) {
+            if (countOddPred % 2 == 0) { // same parity
+                // update counter
+                incrementPredicateCounter(countSameParity, var1, var2);
+            } else if (countOddPred % 2 == 1) { // not same parity
+                incrementPredicateCounter(countDiffParity, var1, var2);
+            }
         }
     }
 
