@@ -15,12 +15,43 @@ public class Main {
 	static String[] varList;
 
 	public static void main(String[] args) throws FileNotFoundException {
-		Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/Sum/TwoForOne.txt")).useDelimiter(" ");
-		varList = in.nextLine().split(" "); // first line is the variables
+		System.out.println("Running final project- Program Analysis and Verification");
+		Scanner input = new Scanner(System.in);
+		System.out.println("Choose which analysis to run (Parity/Sum):");
+		String analysisType = input.nextLine();
+		System.out.println("Choose which program to run the analysis on (1/2/3/4/5): ");
+		String programToRun = input.nextLine();
+		input.close();
+		Scanner in = null;
+		try {
+			in = new Scanner(new File("./AnalysisVerification/src/misc/" + analysisType +
+					"/" + programToRun + ".txt")).useDelimiter(" ");
+		}
+		catch (Exception e){
+			System.out.println("Make sure your input is legal");
+			System.exit(1);
+		}
+
+		//Scanner in = new Scanner(new File("./AnalysisVerification/src/misc/Sum/2.txt")).useDelimiter(" ");
+		varList = in.nextLine().split(" "); // first line is the list of variables
 		controlGraph = Manager.buildGraph(in, varList);
-		//CartesianChaoticIteration();
-		System.out.println(SummationAnalysis());
-		System.out.println("finish");
+		in.close();
+		boolean isValid = true;
+		switch (analysisType.toLowerCase()){
+			case "parity":
+				isValid = ParityChaoticIteration();
+				break;
+			case "sum":
+				isValid = SummationAnalysis();
+				break;
+			default:
+				System.out.println("Illegal analysis type");
+		}
+
+		if (isValid)
+			System.out.println("The program does not violate the assertions");
+		else
+			System.out.println("The program violates the assertions");
 	}
 
 	private static void removeWLDuplicates(List<Vertex> workList) {
@@ -105,7 +136,7 @@ public class Main {
 			// the new state of our current vertex is given by join of all vertices point to the vertex, after applying the corresponding abstract function
 			for (Entry<Vertex, Command> entry : currNode.pointedBy.entrySet()) {
 				VEVisitor v = VEAnalysis.applyAbstractFunction(entry.getKey().VEState, entry.getValue());
-//				newVE = VEAnalysis.join(newVE, v.getNewState());
+				// newVE = VEAnalysis.join(newVE, v.getNewState());
 				newVE.addAll(v.getNewState());
 			}
 
