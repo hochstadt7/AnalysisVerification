@@ -1,0 +1,8 @@
+n i j
+L0 n := ? L1
+L1 i := 2 L2
+L2 j := 2 L3
+L3 assume(TRUE) L6
+L3 assume(i != j) L4
+L4 i := j + 1 L6
+L6 assert (SUM i i = SUM j j) L7

@@ -9,6 +9,7 @@ public class CPVisitor implements Visitor {
     private final Map<String, Integer> inState;
     Map<String, Integer> newState;
     private final Map<String, Integer> allBottoms;
+    public boolean contracdiction = false;
 
     public Map<String, Integer> produceAllBottoms() {
         Map<String, Integer> bottoms = new HashMap<>();
@@ -47,7 +48,7 @@ public class CPVisitor implements Visitor {
             newState.put(var1, TOP);            
         } else { // i = K
             Integer val = intAssignCmd.getVal();
-            newState.put(var1, val);   
+            newState.put(var1, val);
         }
     }
 
@@ -92,11 +93,13 @@ public class CPVisitor implements Visitor {
         Integer val = intEqualityExpr.getVal();
         if (!intEqualityExpr.isEqual()) { // i != K
             if (inState.get(var1).equals(val)) { // assuming i != K where i == K is a contradiction
+                this.contracdiction = true;
                 newState = new HashMap<>(allBottoms);
             }
         } else { // i = K
             Integer currAbsVal1 = inState.get(var1);
             if (currAbsVal1.equals(BOTTOM)) {
+                this.contracdiction = true;
             	newState = new HashMap<>(allBottoms);
             } else  { // includes the cases where i is TOP or number
             	newState.put(var1, val);
@@ -115,6 +118,7 @@ public class CPVisitor implements Visitor {
                     !prevRvVal.equals(TOP) &&
                     !prevRvVal.equals(BOTTOM)
             ) { // if i = j and they both have the same numerical value - contradiction
+                this.contracdiction = true;
                 newState = new HashMap<>(allBottoms);
             }
         } else { // assume i = j
@@ -128,6 +132,7 @@ public class CPVisitor implements Visitor {
                 newState.put(rv, prevLvVal);
             } else if (!prevRvVal.equals(prevLvVal)) {
                 // i and j are even/odd and different - i = j is a contradiction
+                this.contracdiction = true;
                 newState = new HashMap<>(allBottoms);
             }
         }

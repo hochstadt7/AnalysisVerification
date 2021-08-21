@@ -15,6 +15,7 @@ public class ParityVisitor implements Visitor {
     Map<String, Map<String, String>> newDiff;
     private final Map<String, String> allBottoms;
     private final Map<String, Map<String, String>> allBottomsDiff;
+    public boolean contracdiction = false;
 
     public Map<String, String> produceAllBottoms() {
         Map<String, String> bottoms = new HashMap<>();
@@ -210,6 +211,7 @@ public class ParityVisitor implements Visitor {
             switch (prevAbsVal1) {
                 // if i is bottom then i = K never holds - all variables go to bottom since there's a contradiction
                 case BOTTOM:
+                    this.contracdiction = true;
                     newState = new HashMap<>(allBottoms);
                     newDiff = new HashMap<>(allBottomsDiff);
                     break;
@@ -240,6 +242,7 @@ public class ParityVisitor implements Visitor {
                 case EVEN:
                     // if i is even, assuming i = odd K is a contradiction
                     if (intEqualityExpr.getVal() % 2 == 1) {
+                        this.contracdiction = true;
                         newState = new HashMap<>(allBottoms);
                         newDiff = new HashMap<>(allBottomsDiff);
                     } // else - same parity, no new information learned
@@ -266,6 +269,7 @@ public class ParityVisitor implements Visitor {
             String prevRvVal = inState.get(rv);
             if (prevRvVal.equals(BOTTOM) || prevLvVal.equals(BOTTOM)) {
                 // equality never holds, nothing equals bottom, contradiction
+                this.contracdiction = true;
                 newState = new HashMap<>(allBottoms);
                 newDiff = new HashMap<>(allBottomsDiff);
             } else if (prevLvVal.equals(TOP)) { // i (top) = j => i gets j's parity
@@ -340,6 +344,7 @@ public class ParityVisitor implements Visitor {
                 }
             } else if (!prevRvVal.equals(prevLvVal)) {
                 // i and j are even/odd and different - i = j is a contradiction
+                this.contracdiction = true;
                 newState = new HashMap<>(allBottoms);
                 newDiff = new HashMap<>(allBottomsDiff);
             }

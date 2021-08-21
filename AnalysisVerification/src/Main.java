@@ -17,7 +17,7 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		System.out.println("Running final project- Program Analysis and Verification");
 		Scanner input = new Scanner(System.in);
-		System.out.println("Choose which analysis to run (Parity/Sum):");
+		System.out.println("Choose which analysis to run (Parity/Sum/Cartesian):");
 		String analysisType = input.nextLine();
 		System.out.println("Choose which program to run the analysis on (1/2/3/4/5): ");
 		String programToRun = input.nextLine();
@@ -43,6 +43,9 @@ public class Main {
 				break;
 			case "sum":
 				isValid = SummationAnalysis();
+				break;
+			case "cartesian":
+				isValid = CartesianChaoticIteration();
 				break;
 			default:
 				System.out.println("Illegal analysis type");
@@ -149,28 +152,29 @@ public class Main {
 		}
 	}
 
-	public static void CartesianChaoticIteration() {
+	public static boolean CartesianChaoticIteration() {
 		List<Vertex> workList = new ArrayList<>(controlGraph.namedVertices.values());
 		Set<String> setVars = new HashSet<>();
 		setVars.addAll(Arrays.asList(varList)); // convert array to set
 
 		while (!workList.isEmpty()) {
 			Vertex currNode = workList.remove(0);
-			Map<String, CartesianProduct> newCartesian = Manager.initializeCartesianState(varList, CartesianVisitor.bottomProduct(setVars));
+			Map<String, CartesianProduct> newCartesianState = Manager.initializeCartesianState(varList, CartesianVisitor.bottomProduct(setVars));
 
 			// the new state of our current vertex is given by join of all vertices point to the vertex, after applying the corresponding abstract function
 			for (Entry<Vertex, Command> entry : currNode.pointedBy.entrySet()) {
 				CartesianVisitor v = cartesianAnalysis.applyAbstractFunction(entry.getKey().cartesianState, entry.getValue());
-				newCartesian = CartesianAnalysis.join(newCartesian, v.getNewState());
+				newCartesianState = CartesianAnalysis.join(newCartesianState, v.getNewState());
 			}
 
-			if (!newCartesian.equals(currNode.cartesianState) && currNode.pointedBy.size() > 0) {
-				controlGraph.namedVertices.get(currNode.label).cartesianState = newCartesian;
+			if (!newCartesianState.equals(currNode.cartesianState) && currNode.pointedBy.size() > 0) {
+				controlGraph.namedVertices.get(currNode.label).cartesianState = newCartesianState;
 				// append all vertices pointed by our current vertex
 				workList.addAll(currNode.pointsTo);
 			}
 			removeWLDuplicates(workList);
 		}
+		return checkAssertions();
 	}
 
 	public static boolean SummationAnalysis() {

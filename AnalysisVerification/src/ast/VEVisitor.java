@@ -6,6 +6,7 @@ import java.util.HashSet;
 public class VEVisitor implements Visitor {
     private final Set<VariableEquality> inState;
     private Set<VariableEquality> newState;
+    public boolean contracdiction = false;
 
     public VEVisitor(Set<VariableEquality> inState) {
         this.inState = inState;
@@ -95,6 +96,7 @@ public class VEVisitor implements Visitor {
             newState.add(exprVe);
         } else { // assume i != j
             if (newState.contains(exprVe)) { // contradiction
+                this.contracdiction = true;
                 newState = new HashSet<>();
             }
         }

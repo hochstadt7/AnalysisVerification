@@ -74,7 +74,7 @@ public class CartesianVisitor implements Visitor {
         assumeCmd.getExpr().accept(this);
     }
 
-    public void updateNewState(Command command){
+    public void updateNewStateCommand(Command command){
         for (String var : inState.keySet()){
             CartesianProduct currCartesianProduct = inState.get(var);
             ParityVisitor v = new ParityVisitor(currCartesianProduct.getInStateParity(),
@@ -84,8 +84,15 @@ public class CartesianVisitor implements Visitor {
             command.accept(v);
             VEVisitor veVisitor= new VEVisitor(currCartesianProduct.getInStateVE());
             command.accept(veVisitor);
-            newState.put(var, new CartesianProduct(v.getNewState(), v.getNewDiff(),
-                    veVisitor.getNewState(), cpVisitor.getNewState()));
+            // if there is contracdiction in one of the analyses, all go to bottom
+            if (v.contracdiction || cpVisitor.contracdiction || veVisitor.contracdiction) {
+                newState.put(var, CartesianVisitor.bottomProduct(inState.keySet()));
+            }
+            else{
+                newState.put(var, new CartesianProduct(v.getNewState(), v.getNewDiff(),
+                        veVisitor.getNewState(), cpVisitor.getNewState()));
+            }
+
         }
     }
 
@@ -99,19 +106,25 @@ public class CartesianVisitor implements Visitor {
             command.accept(v);
             VEVisitor veVisitor= new VEVisitor(currCartesianProduct.getInStateVE());
             command.accept(veVisitor);
-            newState.put(var, new CartesianProduct(v.getNewState(), v.getNewDiff(),
-                    veVisitor.getNewState(), cpVisitor.getNewState()));
+            if (v.contracdiction || cpVisitor.contracdiction || veVisitor.contracdiction) {
+                newState.put(var, CartesianVisitor.bottomProduct(inState.keySet()));
+            }
+            else{
+                newState.put(var, new CartesianProduct(v.getNewState(), v.getNewDiff(),
+                        veVisitor.getNewState(), cpVisitor.getNewState()));
+            }
+
         }
     }
 
     @Override
     public void visit(IntAssignCmd intAssignCmd) {
-        updateNewState(intAssignCmd);
+        updateNewStateCommand(intAssignCmd);
     }
 
     @Override
     public void visit(VarAssignCmd varAssignCmd) {
-        updateNewState(varAssignCmd);
+        updateNewStateCommand(varAssignCmd);
     }
 
     @Override

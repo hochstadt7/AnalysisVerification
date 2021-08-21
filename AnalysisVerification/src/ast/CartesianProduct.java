@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class CartesianProduct {
@@ -32,5 +33,21 @@ public class CartesianProduct {
         this.inStateVE = inStateVE;
         this.inStateCP = inStateCP;
     }
+
+    //@Override I am not sure if works
+    public boolean equals(Object o) {
+        if (!(o instanceof CartesianProduct)) {
+            return false;
+        }
+        CartesianProduct other = (CartesianProduct) o;
+        return other.inStateParity.equals(this.inStateParity) && other.inDiffParity.equals(this.inDiffParity) &&
+                (other.inStateVE.equals(this.inStateVE) && other.inStateCP.equals(this.inStateCP));
+    }
+
+    /*@Override
+    public int hashCode() {
+        return Objects.hash(this.inStateParity, this.inStateParity) + Objects.hash(this.inDiffParity, this.inDiffParity)
+                + Objects.hash(this.inStateVE, this.inStateVE) + Objects.hash(this.inStateCP, this.inStateCP);
+    }*/
 
 }
