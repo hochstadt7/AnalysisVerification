@@ -107,7 +107,8 @@ public class CartesianVisitor implements Visitor {
             VEVisitor veVisitor= new VEVisitor(currCartesianProduct.getInStateVE());
             command.accept(veVisitor);
             if (v.contracdiction || cpVisitor.contracdiction || veVisitor.contracdiction) {
-                newState.put(var, CartesianVisitor.bottomProduct(inState.keySet()));
+                newState = produceAllBottoms();
+                return;
             }
             else{
                 newState.put(var, new CartesianProduct(v.getNewState(), v.getNewDiff(),

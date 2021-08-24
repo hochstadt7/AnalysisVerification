@@ -19,8 +19,10 @@ public class CartesianAnalysis {
 
     public static CartesianProduct joinPointWise(CartesianProduct value1, CartesianProduct value2) {
 
-        Map<String, String> joinParity = ParityAnalysis.join(value1.getInStateParity(), value2.getInStateParity());
-        Map<String, Map<String, String>> joinDiff = ParityAnalysis.joinRelState(value1.getInDiffParity(), value2.getInDiffParity());
+        Map<String, String> joinParity = ParityAnalysis.join(value1.getInStateParity(),
+                value2.getInStateParity());
+        Map<String, Map<String, String>> joinDiff = ParityAnalysis.joinRelState(value1.getInDiffParity(),
+                value2.getInDiffParity());
         Set<VariableEquality> joinVE = VEAnalysis.join(value1.getInStateVE(), value2.getInStateVE());
         Map<String, Integer> joinCP = CPAnalysis.join(value1.getInStateCP(), value2.getInStateCP());
 

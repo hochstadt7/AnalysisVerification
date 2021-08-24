@@ -39,18 +39,20 @@ public class Main {
 		boolean isValid = true;
 		switch (analysisType.toLowerCase()){
 			case "parity":
-				isValid = ParityChaoticIteration();
+				ParityChaoticIteration();
 				break;
 			case "sum":
-				isValid = SummationAnalysis();
+				SummationAnalysis();
 				break;
 			case "cartesian":
-				isValid = CartesianChaoticIteration();
+				ParityChaoticIteration();
+				SummationAnalysis();
 				break;
 			default:
 				System.out.println("Illegal analysis type");
+				System.exit(1);
 		}
-
+		isValid = checkAssertions();
 		if (isValid)
 			System.out.println("The program does not violate the assertions");
 		else
@@ -81,7 +83,7 @@ public class Main {
 		return true;
 	}
 
-	public static boolean ParityChaoticIteration() {
+	public static void ParityChaoticIteration() {
 		List<Vertex> workList = new ArrayList<>(controlGraph.namedVertices.values());
 
 		while (!workList.isEmpty()) { // need to check edge case where there is no variable at the beginning?
@@ -104,7 +106,7 @@ public class Main {
 			}
 			removeWLDuplicates(workList);
 		}
-		return checkAssertions();
+
 	}
 
 	public static void CPChaoticIteration() {
@@ -152,7 +154,7 @@ public class Main {
 		}
 	}
 
-	public static boolean CartesianChaoticIteration() {
+	/*public static void CartesianChaoticIteration() {
 		List<Vertex> workList = new ArrayList<>(controlGraph.namedVertices.values());
 		Set<String> setVars = new HashSet<>();
 		setVars.addAll(Arrays.asList(varList)); // convert array to set
@@ -174,15 +176,15 @@ public class Main {
 			}
 			removeWLDuplicates(workList);
 		}
-		return checkAssertions();
-	}
 
-	public static boolean SummationAnalysis() {
+	}*/
+
+	public static void SummationAnalysis() {
 		CPChaoticIteration();
 		VEChaoticIteration();
 		for (Vertex v : controlGraph.namedVertices.values()) {
 			Manager.reduceUntilFixed(v.CPState, v.VEState);
 		}
-		return checkAssertions();
+
 	}
 }

@@ -5,4 +5,4 @@ L2 n := j + 1 L3
 L3 assume(i = n) L5
 L3 assume(i != n) L4
 L4 i := i + 1 L3
-L5 assert (SUM i = SUM j) L6
+L5 assert (SUM i = SUM j ODD i) L6

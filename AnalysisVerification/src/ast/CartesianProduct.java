@@ -34,7 +34,7 @@ public class CartesianProduct {
         this.inStateCP = inStateCP;
     }
 
-    //@Override I am not sure if works
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof CartesianProduct)) {
             return false;
@@ -46,7 +46,8 @@ public class CartesianProduct {
 
     /*@Override
     public int hashCode() {
-        return Objects.hash(this.inStateParity, this.inStateParity) + Objects.hash(this.inDiffParity, this.inDiffParity)
+        return Objects.hash(this.inStateParity, this.inStateParity) +
+                Objects.hash(this.inDiffParity, this.inDiffParity)
                 + Objects.hash(this.inStateVE, this.inStateVE) + Objects.hash(this.inStateCP, this.inStateCP);
     }*/
 

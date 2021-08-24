@@ -5,4 +5,4 @@ L2 j := 2 L3
 L3 assume(TRUE) L6
 L3 assume(i != j) L4
 L4 i := j + 1 L6
-L6 assert (SUM i i = SUM j j) L7
+L6 assert (SUM i i = SUM j j) (EVEN i EVEN j) L7
