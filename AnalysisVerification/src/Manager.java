@@ -134,4 +134,27 @@ public class Manager {
 		inCP.clear(); inCP.putAll(newCP);
 		inVE.clear(); inVE.addAll(newVE);
 	}
+
+	// Updates Parity factoids and Diff factoids from separate fixed points to get a more detailed view
+	// given VE analyses' results.
+	public static void reduceUntilFixed(Map<String, String> inParity, Map<String, Map<String, String>> inDiff, Set<VariableEquality> inVE) {
+
+		// reduce right
+		for (VariableEquality varEq : inVE) {
+			String lv = varEq.getLv();
+			String rv = varEq.getRv();
+			String leftVal = inParity.get(lv);
+			String rightVal = inParity.get(lv);
+
+			if (!(leftVal.equals(ParityVisitor.TOP) && rightVal.equals(ParityVisitor.TOP))){ // possible update
+				if (leftVal.equals(ParityVisitor.TOP) && !rightVal.equals(ParityVisitor.BOTTOM))
+					inParity.put(lv, rightVal);
+				else if (rightVal.equals(ParityVisitor.TOP) && !leftVal.equals(ParityVisitor.BOTTOM))
+					inParity.put(rv, leftVal);
+			} else { // only in this case there is a reason to update inDiff
+				inDiff.get(lv).put(rv, ParityVisitor.EVEN);
+				inDiff.get(rv).put(lv, ParityVisitor.EVEN);
+			}
+		}
+	}
 }

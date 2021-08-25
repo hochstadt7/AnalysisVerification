@@ -38,7 +38,7 @@ public class ParityVisitor implements Visitor {
         return bottoms;
     }
 
-    private void updateNewDiff(String var1, String var2, String val) {
+    public void updateNewDiff(String var1, String var2, String val) {
         newDiff.get(var1).put(var2, val);
         newDiff.get(var2).put(var1, val);
     }
@@ -114,7 +114,7 @@ public class ParityVisitor implements Visitor {
                 String currAbsVal2 = inState.get(var2);
                 if (var2.equals(rv)) {
                     // i = n makes n - i = EVEN
-                    updateNewDiff(lv, var2, inState.get(rv).equals(BOTTOM)? BOTTOM : EVEN); // even if n is Bottom???
+                    updateNewDiff(lv, var2, inState.get(rv).equals(BOTTOM)? BOTTOM : EVEN);
                 }
                 else {
                     // possible update using prev_gap info

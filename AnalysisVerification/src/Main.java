@@ -47,6 +47,9 @@ public class Main {
 			case "cartesian":
 				ParityChaoticIteration();
 				SummationAnalysis();
+				for (Vertex v : controlGraph.namedVertices.values()) {
+					Manager.reduceUntilFixed(v.parityState, v.relationalParityState, v.VEState);
+				}
 				break;
 			default:
 				System.out.println("Illegal analysis type");
