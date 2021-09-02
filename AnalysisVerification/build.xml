@@ -39,4 +39,14 @@
         <delete file="${src}/Parser.java"/>
         <delete file="${src}/sym.java"/>
     </target>
+
+    <target name="dist" depends="compile"
+            description="generate the distribution">
+        <jar jarfile="paav.jar" basedir="${build}">
+            <manifest>
+                <attribute name="Main-Class" value="Main"/>
+                <attribute name="Class-Path" value="${tools}/java-cup-11b-runtime.jar ${tools}/java-cup-11b.jar ${tools}/jakarta.xml.bind-api-2.3.3.jar"/>
+            </manifest>
+        </jar>
+    </target>
 </project>
