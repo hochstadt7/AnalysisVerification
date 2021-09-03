@@ -43,9 +43,10 @@
     <target name="dist" depends="compile"
             description="generate the distribution">
         <jar jarfile="paav.jar" basedir="${build}">
+            <zipgroupfileset dir="${tools}" includes="*.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="Main"/>
-                <attribute name="Class-Path" value="${tools}/java-cup-11b-runtime.jar ${tools}/java-cup-11b.jar ${tools}/jakarta.xml.bind-api-2.3.3.jar"/>
+                <attribute name="Class-Path" value="${tools}/*.jar"/>
             </manifest>
         </jar>
     </target>
